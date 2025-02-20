@@ -1,6 +1,7 @@
 from aiogram import Bot, Dispatcher, executor, types
 from AI import req
 
+
 API_TOKEN = '7983759358:AAHhLAi9Sboz1DL0d2Rls2d-1Fa8TfUHDIw'
 
 # Initialize bot and dispatcher
@@ -10,10 +11,7 @@ dp = Dispatcher(bot)
 
 @dp.message_handler(commands=['start', 'help'])
 async def send_welcome(message: types.Message):
-    """
-    This handler will be called when user sends `/start` or `/help` command
-    """
-    await message.reply("Hi!\nI'm EchoBot!\nPowered by aiogram.")
+    await message.reply("Hi!\nI'm GPT!\n")
 
 
 
