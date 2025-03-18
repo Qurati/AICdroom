@@ -1,25 +1,30 @@
 from aiogram import Bot, Dispatcher, executor, types
-from AI import req
+from menu import *
+from handlers.base_handlers import *
+from handlers.anws_handler import *
+from handlers.AI_handledrs import *
+from db import *
+from config import *
 
 
-API_TOKEN = '7983759358:AAHhLAi9Sboz1DL0d2Rls2d-1Fa8TfUHDIw'
 
 # Initialize bot and dispatcher
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
 
+create_db()
 
-@dp.message_handler(commands=['start', 'help'])
-async def send_welcome(message: types.Message):
-    await message.reply("Hi!\nI'm GPT!\n")
-
-
-
-@dp.message_handler()
-async def echo(message: types.Message):
-  await message.reply(req(message.text))
+async def on_startup(dispatcher: Dispatcher):
+    await set_commands(bot)
 
 
+start_com(dp)
+AI_handlers(dp)
+#В последнюю очередь запускаем ответы
+start_answer(dp)
 
-if __name__ == '__main__':
-    executor.start_polling(dp, skip_updates=True)
+
+
+
+if __name__ == "__main__":
+    executor.start_polling(dp, on_startup=on_startup, skip_updates=True)
