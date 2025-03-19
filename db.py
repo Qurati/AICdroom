@@ -15,5 +15,12 @@ def create_db():
                         user_id INTEGER PRIMARY KEY,
                         model TEXT DEFAULT 'None',
                         AI TEXT DEFAULT 'None')''')
+
+    cursor.execute('''CREATE TABLE IF NOT EXISTS context (
+                            user_id INTEGER,
+                            role TEXT,
+                            content TEXT,
+                            FOREIGN KEY(user_id) REFERENCES database(user_id)
+                          )''')
     conn.commit()
     conn.close()
