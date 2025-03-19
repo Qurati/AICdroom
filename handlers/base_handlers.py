@@ -1,5 +1,6 @@
 from aiogram import types
 from keyboards.start_kb import start_kb
+from context import *
 from db import *
 
 
@@ -10,8 +11,15 @@ def start_com(dp):
         user_id = message.from_user.id
         cursor.execute("INSERT OR IGNORE INTO database (user_id) VALUES (?)", (user_id,))
         conn.commit()
-        await message.reply("Привет! Я бот для общения с ChatGPT. Используйте команды в меню.", reply_markup=start_kb(message))
+        await message.reply("Привет! Я бот для общения с ChatGPT. Используйте команды в меню.",
+                                reply_markup=start_kb(message))
 
+    @dp.message_handler(commands=["clear_context"])
+    async def clear_chat_context(message: types.Message):
+        user_id = message.from_user.id
+        clear_context(user_id)
+        await message.reply("Контекст беседы очищен.")
+        await message.reply("Привет! Я бот для общения с ChatGPT. Используйте команды в меню.", reply_markup=start_kb(message))
 
     @dp.message_handler(commands=["ask"])
     async def ask_question(message: types.Message):

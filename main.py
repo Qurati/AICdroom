@@ -1,4 +1,4 @@
-from aiogram import Bot, Dispatcher, executor, types
+from aiogram import Bot, Dispatcher, executor
 from menu import *
 from handlers.base_handlers import *
 from handlers.anws_handler import *

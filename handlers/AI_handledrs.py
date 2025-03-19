@@ -23,7 +23,7 @@ def AI_handlers(dp):
         if message.text == 'Сменить модель':
             await message.reply("Пожалуйста, выберите модель", reply_markup=change_model_kb)
         if message.text == 'Вернуться':
-            await message.reply('Меню', reply_markup=change_model_kb)
+            await message.reply('Меню', reply_markup=start_kb(message))
     @dp.message_handler(lambda message: message.text in GPT_models)
     async def choose_model(message: types.Message):
         user_id = message.from_user.id
