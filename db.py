@@ -22,5 +22,11 @@ def create_db():
                             content TEXT,
                             FOREIGN KEY(user_id) REFERENCES database(user_id)
                           )''')
+    cursor.execute('''CREATE TABLE IF NOT EXISTS profiles (
+                            user_id INTEGER PRIMARY KEY,
+                            username TEXT DEFAULT 'Unknown',
+                            message_count INTEGER DEFAULT 0,
+                            FOREIGN KEY(user_id) REFERENCES database(user_id)
+                          )''')
     conn.commit()
     conn.close()

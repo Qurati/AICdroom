@@ -1,9 +1,10 @@
 from aiogram import types
-from db import *
 from keyboards.model_GPT import change_model_kb
 from keyboards.AI_chooser import change_AI_kb
 from config import GPT_models, AI_models
 from keyboards.start_kb import start_kb
+from context import *
+from db import *
 
 
 def AI_handlers(dp):
@@ -52,3 +53,11 @@ def AI_handlers(dp):
         conn.commit()
         conn.close()
         await message.answer(f"Ты выбрал {message.text}. Теперь отправь свой вопрос.", reply_markup=start_kb(message))
+
+    @dp.message_handler(commands=["clear_context"])
+    async def clear_chat_context(message: types.Message):
+        user_id = message.from_user.id
+        clear_context(user_id)
+        await message.reply("Контекст беседы очищен.")
+        await message.reply("Привет! Я бот для общения с ChatGPT. Используйте команды в меню.",
+                            reply_markup=start_kb(message))
