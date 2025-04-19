@@ -11,4 +11,6 @@ def start_kb(msg):
     if ai =="GPT":
         main_kb.add(KeyboardButton("Сменить модель"))
     main_kb.add(KeyboardButton("Сменить ИИ"))
+    main_kb.add(KeyboardButton("Сменить роль"))
+    main_kb.add(KeyboardButton("Слоты сохранения"))
     return main_kb

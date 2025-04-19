@@ -5,11 +5,12 @@ from handlers.anws_handler import *
 from handlers.AI_handledrs import *
 from db import *
 from config import *
-
+from handlers.roles_handlers import *
+from handlers.slots_handlers import *
 
 
 # Initialize bot and dispatcher
-bot = Bot(token=API_TOKEN)
+bot = Bot(token=API_TOKEN,)
 dp = Dispatcher(bot)
 
 create_db()
@@ -20,6 +21,8 @@ async def on_startup(dispatcher: Dispatcher):
 
 start_com(dp)
 AI_handlers(dp)
+roles_handlers(dp)
+slots_handlers(dp)
 #В последнюю очередь запускаем ответы
 start_answer(dp)
 

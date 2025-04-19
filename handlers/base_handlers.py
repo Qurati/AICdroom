@@ -1,6 +1,7 @@
 from aiogram import types
 from keyboards.start_kb import start_kb
 from profile import *
+from slots import *
 
 def start_com(dp):
     @dp.message_handler(commands=['start'])
@@ -64,3 +65,4 @@ def start_com(dp):
                 """
 
         await message.reply(profile_text, parse_mode="Markdown")
+

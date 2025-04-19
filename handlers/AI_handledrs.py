@@ -3,8 +3,10 @@ from keyboards.model_GPT import change_model_kb
 from keyboards.AI_chooser import change_AI_kb
 from config import GPT_models, AI_models
 from keyboards.start_kb import start_kb
+from keyboards.roles_kb import role_kb
 from context import *
 from db import *
+from keyboards.slots_kb import *
 
 
 def AI_handlers(dp):
@@ -17,13 +19,15 @@ def AI_handlers(dp):
     async def change_ai(message: types.Message):
         await message.answer("Пожалуйста, выберите нейросеть", reply_markup=change_AI_kb)
 
-    @dp.message_handler(lambda message: message.text in ['Сменить модель', 'Сменить ИИ', 'Вернуться'])
+    @dp.message_handler(lambda message: message.text in ['Сменить модель', 'Сменить ИИ', 'Сменить роль', 'Вернуться'])
     async def change_func(message: types.Message):
         if message.text == 'Сменить ИИ':
             await message.answer("Пожалуйста, выберите нейросеть", reply_markup=change_AI_kb)
-        if message.text == 'Сменить модель':
+        elif message.text == 'Сменить модель':
             await message.reply("Пожалуйста, выберите модель", reply_markup=change_model_kb)
-        if message.text == 'Вернуться':
+        elif message.text == 'Сменить роль':
+            await message.reply("Выберите новую роль:", reply_markup=role_kb)
+        elif message.text == 'Вернуться':
             await message.reply('Меню', reply_markup=start_kb(message))
     @dp.message_handler(lambda message: message.text in GPT_models)
     async def choose_model(message: types.Message):
