@@ -6,5 +6,7 @@ role_kb.add(
     KeyboardButton("Психолог"),
     KeyboardButton("Программист")
 )
-role_kb.add(KeyboardButton("Техподдержка"))
+role_kb.add(KeyboardButton("Техподдержка"),)
 role_kb.add(KeyboardButton("Сбросить роль"))
+role_kb.add(KeyboardButton("Вернуться"))
+

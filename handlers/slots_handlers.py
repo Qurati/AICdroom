@@ -1,11 +1,4 @@
 from aiogram import types
-from keyboards.model_GPT import change_model_kb
-from keyboards.AI_chooser import change_AI_kb
-from config import GPT_models, AI_models
-from keyboards.start_kb import start_kb
-from keyboards.roles_kb import role_kb
-from context import *
-from db import *
 from keyboards.slots_kb import *
 
 def slots_handlers(dp):

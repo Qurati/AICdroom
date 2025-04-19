@@ -11,4 +11,4 @@ def start_answer(dp):
         try:
             await message.reply(req(message), parse_mode="MarkdownV2")
         except Exception as e:
-            await message.reply(f'Ошибка: {e}')
+            await message.reply(f'Ошибка: {e}, \n\n {req(message)}')

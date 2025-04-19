@@ -6,14 +6,9 @@ import requests
 from context import *
 from roles import get_role
 
-# Настройки прокси
-proxies = {
-    "http": "http://user283375:vrwaq1@104.234.228.81:9335",
-    "https": "http://user283375:vrwaq1@104.234.228.81:9335",
-}
 
 # Установите прокси
-openai.proxy = proxies
+openai.proxy = eval(proxies)
 openai.api_key = openAI_key
 
 
@@ -76,7 +71,7 @@ def req(msg):
             url = "https://llm.api.cloud.yandex.net/foundationModels/v1/completion"
             headers = {
                 "Content-Type": "application/json",
-                "Authorization": "Api-Key AQVNxtxvn4P4wBAMgumtjv_5mcy9iOTByoEXHEK_"
+                "Authorization": f"Api-Key {YandexGPT_key}"
             }
 
             # Преобразуем историю сообщений в формат, который принимает Yandex
