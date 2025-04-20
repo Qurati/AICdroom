@@ -1,7 +1,7 @@
 from db import *
 
 
-def get_profile(user_id):
+def get_profile(user_id, username_tg):
     conn, cursor = get_cursor()
 
     # Получаем информацию о пользователе
@@ -16,7 +16,7 @@ def get_profile(user_id):
     # Получаем имя пользователя (если оно есть)
     cursor.execute("SELECT username FROM profiles WHERE user_id = ?", (user_id,))
     username = cursor.fetchone()
-    username = username[0] if username else 'Unknown'
+    username = username[0] if username else username_tg
 
     conn.close()
 

@@ -18,7 +18,7 @@ def start_com(dp):
     @dp.message_handler(commands=["profile"])
     async def profile_info(message: types.Message):
         user_id = message.from_user.id
-        profile = get_profile(user_id)
+        profile = get_profile(user_id, message.from_user.username)
 
         profile_text = f"""
             👤 **Профиль пользователя**  
@@ -70,13 +70,20 @@ def start_com(dp):
     @dp.message_handler(lambda message: message.text in ['Профиль'])
     async def profile_info1(message: types.Message):
         user_id = message.from_user.id
-        profile = get_profile(user_id)
-
+        profile = get_profile(user_id, message.from_user.username)
+        if profile['ai'] == "Yandex":
+            ai = "Yandex GPT"
+        elif profile['ai'] == "GPT":
+            ai = "Chat GPT"
+        elif profile['ai'] == "Giga":
+            ai = "GigaChat"
+        else:
+            ai = None
         profile_text = f"""
                 👤 **Профиль пользователя**  
                 🆔 ID: `{profile['user_id']}`  
                 📛 Имя: `{profile['username']}`  
-                🤖 Выбранный ИИ: `{profile['ai']}`  
+                🤖 Выбранный ИИ: `{ai}`  
                 🛠 Модель Chat GPT: `{profile['model']}`  
                 💬 Сообщений написано: `{profile['message_count']}`
                 """

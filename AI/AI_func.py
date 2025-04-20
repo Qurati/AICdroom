@@ -1,4 +1,3 @@
-from roles import get_role
 from AI.gpt import *
 from AI.yandex import *
 from AI.giga import *
@@ -21,7 +20,6 @@ def req(msg):
 
         history = get_context(user_id)  # Загружаем последние сообщения
 
-
         ######### GPT #########
         if ai == 'GPT':
             if model == 'None':
@@ -34,6 +32,11 @@ def req(msg):
         if ai == 'Yandex':
             role_text = get_role(user_id)
             return format_response(role_text, get_yandex_answer(role_text, history, msg.text, msg.from_user.id), "YandexGPT")
+
+        ######### Giga Chat #########
+        if ai == 'Giga':
+            role_text = get_role(user_id)
+            return format_response(role_text, get_giga_answer(msg.text, history), "GigaChat")
 
     except Exception as e:
         return f'Ошибка: {e}'

@@ -23,6 +23,9 @@ def group_inline_handler(dp):
         elif ai == "Yandex":
             answer = get_yandex_answer_inline(user_input, role)
             ai_name = "YandexGPT"
+        elif ai == "Giga":
+            answer = get_giga_answer_inline(user_input)
+            ai_name = "GigaChat"
         else:
             answer = "Пожалуйста, выберите ИИ в профиле."
             ai_name = "Не выбран"

@@ -50,7 +50,7 @@ def AI_handlers(dp):
         ai = {
             "Yandex GPT": "Yandex",
             "Chat GPT": "GPT",
-            "DeepSeek": "DeepSeek",
+            "GigaChat": "Giga",
         }[message.text]
         conn, cursor = get_cursor()
         cursor.execute("UPDATE database SET AI = ? WHERE user_id = ?", (ai, user_id))
