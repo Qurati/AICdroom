@@ -1,7 +1,7 @@
 from  config import *
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_gigachat.chat_models import GigaChat
-
+from context import *
 
 def giga_auth():
     giga = GigaChat(
@@ -12,12 +12,14 @@ def giga_auth():
     return giga
 
 
-def get_giga_answer(prompt, history):
+def get_giga_answer(prompt, user_id):
     messages = [SystemMessage(
         content="Ты ассистент."
     ), HumanMessage(content=prompt)]
     res = giga_auth().invoke(messages)
     messages.append(res)
+    save_message(user_id, "user", prompt)
+    save_message(user_id, "assistant", res.content)
     return res.content
 
 

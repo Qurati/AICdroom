@@ -55,11 +55,18 @@ def start_com(dp):
     @dp.message_handler(commands=["stats"])
     async def show_stats(message: types.Message):
         stats = get_user_stats(message.from_user.id)
-
+        if stats['ai'] == "Yandex":
+            ai = "Yandex GPT"
+        elif stats['ai'] == "GPT":
+            ai = "Chat GPT"
+        elif stats['ai'] == "Giga":
+            ai = "GigaChat"
+        else:
+            ai = None
         text = (
             f"📊 *Ваша статистика:*\n"
             f"🧠 Активный ИИ: `{stats['ai']}`\n"
-            f"📦 Модель: `{stats['model']}`\n"
+            f"📦 Модель: `{ai}`\n"
             f"🎭 Роль: `{stats['role']}`\n"
             f"🗂 Контекст: `{stats['context']} сообщений`\n"
             f"💾 Всего сохранено в слотах: `{stats['slots']}`"

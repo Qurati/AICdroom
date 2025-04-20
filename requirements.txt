@@ -2,3 +2,5 @@ openai==0.28
 aiogram==2.15
 requests
 dotenv
+langchain-gigachat
+gigachat

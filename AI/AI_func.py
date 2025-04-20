@@ -36,7 +36,7 @@ def req(msg):
         ######### Giga Chat #########
         if ai == 'Giga':
             role_text = get_role(user_id)
-            return format_response(role_text, get_giga_answer(msg.text, history), "GigaChat")
+            return format_response(role_text, get_giga_answer(msg.text, user_id), "GigaChat")
 
     except Exception as e:
         return f'Ошибка: {e}'
