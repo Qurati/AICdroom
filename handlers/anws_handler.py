@@ -1,5 +1,5 @@
 from aiogram import types
-from AI import req
+from AI.AI_func import req
 
 def start_answer(dp):
     @dp.message_handler(lambda msg: not msg.via_bot)

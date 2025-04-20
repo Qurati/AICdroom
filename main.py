@@ -5,7 +5,7 @@ from handlers.anws_handler import *
 from handlers.AI_handledrs import *
 from handlers.roles_handlers import *
 from handlers.slots_handlers import *
-from AI import *
+from AI.AI_func import *
 from handlers.group_inline_handlers import group_inline_handler
 
 # запуск бота и диспетчера

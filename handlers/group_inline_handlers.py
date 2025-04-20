@@ -1,7 +1,7 @@
 from aiogram.types import InlineQueryResultArticle, InputTextMessageContent
 import uuid
 from aiogram import types
-from AI import *
+from AI.AI_func import *
 
 def group_inline_handler(dp):
     def escape_md(text: str) -> str:
@@ -18,10 +18,10 @@ def group_inline_handler(dp):
         ai, model, role = get_ai_model_role(user_id)
 
         if ai == "GPT":
-            answer = get_gpt_answer(user_input, user_id, model, role)
+            answer = get_gpt_answer_inline(user_input, user_id, model, role)
             ai_name = "ChatGPT"
         elif ai == "Yandex":
-            answer = get_yandex_answer(user_input, role)
+            answer = get_yandex_answer_inline(user_input, role)
             ai_name = "YandexGPT"
         else:
             answer = "Пожалуйста, выберите ИИ в профиле."
