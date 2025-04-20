@@ -1,5 +1,4 @@
 openai==0.28
 aiogram==2.15
 requests
-speechrecognition
-pydub
+dotenv

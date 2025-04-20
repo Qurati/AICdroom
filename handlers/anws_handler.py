@@ -1,12 +1,8 @@
-from logging import exception
-
 from aiogram import types
-
-
 from AI import req
 
 def start_answer(dp):
-    @dp.message_handler()
+    @dp.message_handler(lambda msg: not msg.via_bot)
     async def process_question(message: types.Message):
         try:
             await message.reply(req(message), parse_mode="MarkdownV2")

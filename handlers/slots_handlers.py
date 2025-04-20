@@ -9,6 +9,8 @@ def slots_handlers(dp):
         if message.text == 'Слоты сохранения':
             await message.reply("Выберите слот:", reply_markup=slots_num_kb)
 
+
+    #взаимодействие со слотом 1
     @dp.callback_query_handler(text="save1")
     async def save_slot1(call: types.CallbackQuery):
         save_context_to_slot(call.from_user.id, 1)
@@ -23,6 +25,7 @@ def slots_handlers(dp):
         clear_slot(call.from_user.id, 1)
         await call.answer('Ваша переписка удалена из слота 1', True)
 
+    #взаимодействие со слотом 2
     @dp.callback_query_handler(text="save2")
     async def save_slot2(call: types.CallbackQuery):
         save_context_to_slot(call.from_user.id, 2)
@@ -38,6 +41,7 @@ def slots_handlers(dp):
         clear_slot(call.from_user.id, 2)
         await call.answer('Ваша переписка удалена из слота 2', True)
 
+    #взаимодействие со слотом 3
     @dp.callback_query_handler(text="save3")
     async def save_slot3(call: types.CallbackQuery):
         save_context_to_slot(call.from_user.id, 3)
@@ -52,6 +56,7 @@ def slots_handlers(dp):
     async def delete_slot3(call: types.CallbackQuery):
         clear_slot(call.from_user.id, 3)
         await call.answer('Ваша переписка удалена из слота 3', True)
+
 
     @dp.message_handler(lambda message: message.text in ['Слот 1', 'Слот 2', 'Слот 3',])
     async def slots_handler(message: types.Message):

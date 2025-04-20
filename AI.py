@@ -1,6 +1,5 @@
 import openai
 import re
-
 from config import *
 import requests
 from context import *
@@ -104,3 +103,30 @@ def req(msg):
     ######### Если ИИ не выбран #########
     if ai == 'None':
         return "Пожалуйста, выберите ИИ"
+
+
+def get_gpt_answer(text, user_id, model, role_text):
+    try:
+        messages = [{"role": "system", "content": role_text}, {"role": "user", "content": text}]
+        response = openai.ChatCompletion.create(model=model, messages=messages)
+        return response.choices[0].message['content']
+    except Exception as e:
+        return f"Ошибка GPT: {e}"
+
+
+def get_yandex_answer(text, role_text):
+    try:
+        headers = {
+            "Authorization": f"Api-Key {YandexGPT_key}",
+            "Content-Type": "application/json"
+        }
+        payload = {
+            "modelUri": "gpt://b1gmmp5rqqqih8ridk52/yandexgpt-lite",
+            "completionOptions": {"stream": False, "temperature": 0.7, "maxTokens": 2000},
+            "messages": [{"role": "system", "text": role_text}, {"role": "user", "text": text}]
+        }
+        res = requests.post("https://llm.api.cloud.yandex.net/foundationModels/v1/completion", headers=headers, json=payload)
+        data = res.json()
+        return data["result"]["alternatives"][0]["message"]["text"]
+    except Exception as e:
+        return f"Ошибка YandexGPT: {e}"

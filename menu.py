@@ -9,6 +9,7 @@ async def set_commands(bot):
         BotCommand("change_role", "Сменить роль"),
         BotCommand("clear_context", "Очистить контекст переписки"),
         BotCommand("profile", "Просмотреть профиль"),
+        BotCommand("stats", "Статистика пользователя"),
         BotCommand("set_username", "Изменить имя"),
         BotCommand("about", "О боте"),
     ]

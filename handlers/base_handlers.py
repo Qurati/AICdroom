@@ -2,6 +2,8 @@ from aiogram import types
 from keyboards.start_kb import start_kb
 from profile import *
 from slots import *
+from db import get_user_stats
+
 
 def start_com(dp):
     @dp.message_handler(commands=['start'])
@@ -49,6 +51,21 @@ def start_com(dp):
     @dp.message_handler(commands=["about"])
     async def about_bot(message: types.Message):
         await message.answer("Я бот, использующий ChatGPT для ответа на ваши вопросы.")
+
+    @dp.message_handler(commands=["stats"])
+    async def show_stats(message: types.Message):
+        stats = get_user_stats(message.from_user.id)
+
+        text = (
+            f"📊 *Ваша статистика:*\n"
+            f"🧠 Активный ИИ: `{stats['ai']}`\n"
+            f"📦 Модель: `{stats['model']}`\n"
+            f"🎭 Роль: `{stats['role']}`\n"
+            f"🗂 Контекст: `{stats['context']} сообщений`\n"
+            f"💾 Всего сохранено в слотах: `{stats['slots']}`"
+        )
+
+        await message.reply(text, parse_mode="Markdown")
 
     @dp.message_handler(lambda message: message.text in ['Профиль'])
     async def profile_info1(message: types.Message):
