@@ -1,16 +1,16 @@
-from aiogram.types import BotCommand
-
+from aiogram.types import BotCommand, BotCommandScopeDefault, BotCommandScopeAllGroupChats
 
 async def set_commands(bot):
-    commands = [
+    # 📱 Меню для ЛИЧНЫХ ЧАТОВ (private)
+    private_commands = [
         BotCommand("start", "Запуск бота"),
-        BotCommand("change_model", "Сменить модель ИИ"),
+        BotCommand("ask", "Задать вопрос"),
+        BotCommand("change_model", "Сменить модель"),
         BotCommand("change_ai", "Сменить ИИ"),
         BotCommand("change_role", "Сменить роль"),
-        BotCommand("clear_context", "Очистить контекст переписки"),
-        BotCommand("profile", "Просмотреть профиль"),
-        BotCommand("stats", "Статистика пользователя"),
-        BotCommand("set_username", "Изменить имя"),
-        BotCommand("about", "О боте"),
+        BotCommand("stats", "Моя статистика"),
     ]
-    await bot.set_my_commands(commands)
+    await bot.set_my_commands(private_commands, scope=BotCommandScopeDefault())
+
+    # 🧑‍🤝‍🧑 Очистить меню в ГРУППАХ
+    await bot.set_my_commands([], scope=BotCommandScopeAllGroupChats())
