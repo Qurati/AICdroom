@@ -1,13 +1,25 @@
 from aiogram import types
 from keyboards.start_kb import start_kb
 from profile import *
-from slots import *
-from db import get_user_stats
+from config import bot
 from keyboards.settings_kb import *
+from checkers.chanel_checker import *
 
 def start_com(dp):
     @dp.message_handler(commands=['start'])
     async def send_welcome(message: types.Message):
+        user_id = message.from_user.id
+
+        if not await check_user_subscription(bot, user_id):
+            await message.answer(
+                "❗ Для использования бота подпишитесь на канал:",
+                reply_markup=types.InlineKeyboardMarkup().add(
+                    types.InlineKeyboardButton("🔔 Подписаться", url="https://t.me/AICdroom")
+                )
+            )
+            return
+
+        await message.answer("✅ Добро пожаловать! Вы подписаны.")
         conn, cursor = get_cursor()
         user_id = message.from_user.id
         cursor.execute("INSERT OR IGNORE INTO database (user_id) VALUES (?)", (user_id,))

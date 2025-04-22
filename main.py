@@ -1,4 +1,4 @@
-from aiogram import Bot, Dispatcher, executor, types
+from aiogram import Dispatcher, executor, types
 from menu import *
 from handlers.base_handlers import *
 from handlers.anws_handler import *
@@ -7,9 +7,10 @@ from handlers.roles_handlers import *
 from handlers.slots_handlers import *
 from AI.AI_func import *
 from handlers.group_inline_handlers import group_inline_handler
+from config import bot
 
 # запуск бота и диспетчера
-bot = Bot(token=API_TOKEN,)
+
 dp = Dispatcher(bot)
 
 #Создание БД
