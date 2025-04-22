@@ -6,6 +6,7 @@ from keyboards.start_kb import start_kb
 from keyboards.roles_kb import role_kb
 from context import *
 from db import *
+from aiogram.utils.exceptions import MessageNotModified
 from keyboards.slots_kb import *
 
 
@@ -19,7 +20,7 @@ def AI_handlers(dp):
     async def change_ai(message: types.Message):
         await message.answer("Пожалуйста, выберите нейросеть", reply_markup=change_AI_kb)
 
-    @dp.message_handler(lambda message: message.text in ['Сменить модель', 'Сменить ИИ', 'Сменить роль', 'Вернуться'])
+    @dp.message_handler(lambda message: message.text in ['Сменить модель', 'Сменить ИИ', 'Сменить роль'])
     async def change_func(message: types.Message):
         if message.text == 'Сменить ИИ':
             await message.answer("Пожалуйста, выберите нейросеть", reply_markup=change_AI_kb)
@@ -27,8 +28,7 @@ def AI_handlers(dp):
             await message.reply("Пожалуйста, выберите модель", reply_markup=change_model_kb)
         elif message.text == 'Сменить роль':
             await message.reply("Выберите новую роль:", reply_markup=role_kb)
-        elif message.text == 'Вернуться':
-            await message.reply('Меню', reply_markup=start_kb(message))
+
     @dp.message_handler(lambda message: message.text in GPT_models)
     async def choose_model(message: types.Message):
         user_id = message.from_user.id
@@ -65,3 +65,36 @@ def AI_handlers(dp):
         await message.reply("Контекст беседы очищен.")
         await message.reply("Привет! Я бот для общения с ChatGPT. Используйте команды в меню.",
                             reply_markup=start_kb(message))
+
+    @dp.callback_query_handler(lambda c: c.data.startswith("toggle_ai_"))
+    async def toggle_ai_selection(call: types.CallbackQuery):
+        user_id = call.from_user.id
+        ai = call.data.split("_")[-1]
+        active = get_active_ai_list(user_id)
+
+        if ai in active:
+            active.remove(ai)
+        else:
+            active.append(ai)
+
+        set_active_ai_list(user_id, active)
+        await ai_edit_set(call)  # перерисовываем с новыми данными
+
+    @dp.callback_query_handler(text= "edit_ai_set")
+    async def ai_edit_set(call: types.CallbackQuery):
+        user_id = call.from_user.id
+        active = get_active_ai_list(user_id)
+        print(active)
+        buttons = []
+        for ai in ["GPT", "GigaChat", "Yandex"]:
+            state = "✅" if ai in active else "❌"
+            buttons.append(InlineKeyboardButton(f"{state} {ai}", callback_data=f"toggle_ai_{ai}"))
+
+        kb = InlineKeyboardMarkup(row_width=1).add(*buttons)
+        text = "Выберите, какие ИИ будут отвечать на ваши сообщения:"
+
+        try:
+            await call.message.edit_text(text, reply_markup=kb)
+        except MessageNotModified:
+            await call.answer("Ошибка ❌", show_alert=False)
+

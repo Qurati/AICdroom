@@ -6,5 +6,8 @@ def start_answer(dp):
     async def process_question(message: types.Message):
         try:
             await message.reply(req(message), parse_mode="MarkdownV2")
-        except Exception as e:
-            await message.reply(f'Ошибка: {e}, \n\n {req(message)}')
+        except:
+            try:
+                await message.reply(req(message), parse_mode="Markdown")
+            except:
+                await message.reply(req(message))

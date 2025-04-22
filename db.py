@@ -1,7 +1,11 @@
 import sqlite3
+import json
+import ast
 
 def connect():
-    return sqlite3.connect("database.db")
+    conn = sqlite3.connect("database.db", check_same_thread=False)
+    conn.execute("PRAGMA journal_mode=WAL;")
+    return conn
 
 # Функция для получения курсора
 def get_cursor():
@@ -17,7 +21,8 @@ def create_db():
                         user_id INTEGER PRIMARY KEY,
                         model TEXT DEFAULT 'None',
                         AI TEXT DEFAULT 'None',
-                        role TEXT DEFAULT 'assistant')'''  )
+                        role TEXT DEFAULT 'assistant',
+                        active_ai TEXT DEFAULT '["GPT"]')'''  )
 
     #таблица для записи контекста
     cursor.execute('''CREATE TABLE IF NOT EXISTS context (
@@ -82,3 +87,18 @@ def get_ai_model_role(user_id):
     if not data:
         return "None", "None", "assistant"
     return data
+
+def set_active_ai_list(user_id, ai_list):
+    conn, cursor = get_cursor()
+    cursor.execute("UPDATE database SET active_ai = ? WHERE user_id = ?", (json.dumps(ai_list), user_id))
+    conn.commit()
+    conn.close()
+
+def get_active_ai_list(user_id):
+    conn, cursor = get_cursor()
+    cursor.execute("SELECT active_ai FROM database WHERE user_id = ?", (user_id,))
+    row = cursor.fetchone()
+    conn.close()
+    if not row or not row[0]:
+        return ["GPT"]  # по умолчанию
+    return ast.literal_eval(row[0])

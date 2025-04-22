@@ -13,4 +13,5 @@ def start_kb(msg):
     main_kb.add(KeyboardButton("Сменить ИИ"))
     main_kb.add(KeyboardButton("Сменить роль"))
     main_kb.add(KeyboardButton("Слоты сохранения"))
+    main_kb.add(KeyboardButton("Настройки"))
     return main_kb

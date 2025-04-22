@@ -3,7 +3,7 @@ from keyboards.start_kb import start_kb
 from profile import *
 from slots import *
 from db import get_user_stats
-
+from keyboards.settings_kb import *
 
 def start_com(dp):
     @dp.message_handler(commands=['start'])
@@ -97,3 +97,9 @@ def start_com(dp):
 
         await message.reply(profile_text, parse_mode="Markdown")
 
+    @dp.message_handler(lambda message: message.text in ['Настройки', 'Вернуться'])
+    async def menu_handler(message: types.Message):
+        if message.text == 'Настройки':
+            await message.answer("Меню настроек:", reply_markup=settings_inline_kb)
+        elif message.text == 'Вернуться':
+            await message.reply('Меню', reply_markup=start_kb(message))
