@@ -22,7 +22,8 @@ def create_db():
                         model TEXT DEFAULT 'None',
                         AI TEXT DEFAULT 'None',
                         role TEXT DEFAULT 'assistant',
-                        active_ai TEXT DEFAULT '["GPT"]')'''  )
+                        active_ai TEXT DEFAULT '["GPT"]',
+                        multi_mode INTEGER DEFAULT 0);''' )
 
     #таблица для записи контекста
     cursor.execute('''CREATE TABLE IF NOT EXISTS context (

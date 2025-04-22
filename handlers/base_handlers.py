@@ -100,6 +100,6 @@ def start_com(dp):
     @dp.message_handler(lambda message: message.text in ['Настройки', 'Вернуться'])
     async def menu_handler(message: types.Message):
         if message.text == 'Настройки':
-            await message.answer("Меню настроек:", reply_markup=settings_inline_kb)
+            await message.answer("Меню настроек:", reply_markup=multi_mode_kb(message.from_user.id))
         elif message.text == 'Вернуться':
-            await message.reply('Меню', reply_markup=start_kb(message))
+            await message.answer('Меню', reply_markup=start_kb(message))

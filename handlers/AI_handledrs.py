@@ -2,12 +2,13 @@ from aiogram import types
 from keyboards.model_GPT import change_model_kb
 from keyboards.AI_chooser import change_AI_kb
 from config import GPT_models, AI_models
+from keyboards.settings_kb import multi_mode_kb
 from keyboards.start_kb import start_kb
 from keyboards.roles_kb import role_kb
 from context import *
-from db import *
 from aiogram.utils.exceptions import MessageNotModified
 from keyboards.slots_kb import *
+from AI.multi_ans import *
 
 
 def AI_handlers(dp):
@@ -98,3 +99,10 @@ def AI_handlers(dp):
         except MessageNotModified:
             await call.answer("Ошибка ❌", show_alert=False)
 
+    @dp.callback_query_handler(lambda c: c.data == "toggle_multi_mode")
+    async def toggle_multi_mode(call: types.CallbackQuery):
+        user_id = call.from_user.id
+        mode = is_multi_mode(user_id)
+        set_multi_mode(user_id, not mode)
+        await call.message.edit_text("Меню настроек:", reply_markup=multi_mode_kb(call.from_user.id))
+        await call.answer(f"Мультиответ {'включен✅' if not mode else 'выключен❌'}")
