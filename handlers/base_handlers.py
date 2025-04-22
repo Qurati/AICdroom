@@ -25,27 +25,6 @@ def start_com(dp):
         await message.reply("Привет! Я бот для общения с ChatGPT. Используйте команды в меню.",
                                 reply_markup=start_kb(message))
 
-    @dp.message_handler(commands=["profile"])
-    async def profile_info(message: types.Message):
-        user_id = message.from_user.id
-        if not await check_user_subscription(bot, user_id):
-            await message.answer(
-                "❗ Для использования бота подпишитесь на канал:",
-                reply_markup=get_subscription_kb(REQUIRED_CHANNEL))
-            return
-        profile = get_profile(user_id, message.from_user.username)
-
-        profile_text = f"""
-            👤 **Профиль пользователя**  
-            🆔 ID: `{profile['user_id']}`  
-            📛 Имя: `{profile['username']}`  
-            🤖 Выбранный ИИ: `{profile['ai']}`  
-            🛠 Модель Chat GPT: `{profile['model']}`  
-            💬 Сообщений в контексте: `{profile['message_count']}`
-            """
-
-        await message.reply(profile_text, parse_mode="Markdown")
-
     @dp.message_handler(commands=["set_username"])
     async def set_username(message: types.Message):
         user_id = message.from_user.id
@@ -115,7 +94,7 @@ def start_com(dp):
         await message.reply(text, parse_mode="Markdown")
 
     @dp.message_handler(lambda message: message.text in ['Профиль'])
-    async def profile_info1(message: types.Message):
+    async def profile_info(message: types.Message):
         user_id = message.from_user.id
         if not await check_user_subscription(bot, user_id):
             await message.answer(
@@ -133,15 +112,15 @@ def start_com(dp):
         else:
             ai = None
         profile_text = f"""
-                👤 **Профиль пользователя**  
-                🆔 ID: `{profile['user_id']}`  
-                📛 Имя: `{profile['username']}`  
-                🤖 Выбранный ИИ: `{ai}`  
-                🛠 Модель Chat GPT: `{profile['model']}`  
-                💬 Сообщений написано: `{profile['message_count']}`
-                """
+          👤 *Профиль пользователя*  
+    🆔 ID: `{profile['user_id']}`  
+    📛 Имя: `{profile['username']}`  
+    🤖 Выбранный ИИ: `{ai}`  
+    🛠 Модель Chat GPT: `{profile['model']}`  
+    💬 Сообщений написано: `{profile['message_count']}`
+    """
 
-        await message.reply(profile_text, parse_mode="Markdown")
+        await message.reply(profile_text, parse_mode="MarkdownV2")
 
     @dp.message_handler(lambda message: message.text in ['Настройки', 'Вернуться'])
     async def menu_handler(message: types.Message):
