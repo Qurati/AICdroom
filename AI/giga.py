@@ -17,6 +17,7 @@ def get_giga_answer(prompt, user_id):
         content="Ты ассистент."
     ), HumanMessage(content=prompt)]
     res = giga_auth().invoke(messages)
+    print(res)
     messages.append(res)
     save_message(user_id, "user", prompt)
     save_message(user_id, "assistant", res.content)

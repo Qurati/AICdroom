@@ -25,7 +25,7 @@ def req(msg):
         cursor.execute("SELECT AI FROM database WHERE user_id = ?", (user_id,))
         single_ai = cursor.fetchone()[0]
         conn.close()
-
+        msg_text = msg.text
         # выбираем режим
         if is_multi_mode(user_id):
             ai_list = get_active_ai_list(user_id)
@@ -40,17 +40,18 @@ def req(msg):
             if ai == 'GPT':
                 if model == 'None':
                     return 'Пожалуйста, выберите модель'
-                answer = format_response(role_text, get_gpt_answer(model, role_text, user_id, msg.text, history), "ChatGPT")
+                answer = format_response(role_text, get_gpt_answer(model, role_text, user_id, msg_text, history), "ChatGPT")
                 answers.append(answer)
 
             ######### Yandex GPT #########
             elif ai == 'Yandex':
-                answer = format_response(role_text, get_yandex_answer(role_text, history, msg.text, user_id), "YandexGPT")
+                answer = format_response(role_text, get_yandex_answer(role_text, history, msg_text, user_id), "YandexGPT")
                 answers.append(answer)
 
             ######### GigaChat #########
-            elif ai == 'GigaChat':
-                answer = format_response(role_text, get_giga_answer(msg.text, user_id), "GigaChat")
+
+            elif ai == 'GigaChat' or ai == 'Giga':
+                answer = format_response(role_text, get_giga_answer(msg_text, user_id), "GigaChat")
                 answers.append(answer)
 
         return "\n\n".join(answers)
