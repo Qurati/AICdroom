@@ -7,7 +7,7 @@ from handlers.roles_handlers import *
 from handlers.slots_handlers import *
 from AI.AI_func import *
 from handlers.group_inline_handlers import group_inline_handler
-from config import bot
+from handlers.sub_handlers import *
 
 # запуск бота и диспетчера
 
@@ -26,6 +26,7 @@ AI_handlers(dp)
 roles_handlers(dp)
 slots_handlers(dp)
 group_inline_handler(dp)
+subs_handlers(dp)
 
 #В последнюю очередь запускаем ответы
 start_answer(dp)

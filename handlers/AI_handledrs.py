@@ -1,7 +1,9 @@
 from aiogram import types
+
+from checkers.chanel_checker import check_user_subscription, REQUIRED_CHANNEL
 from keyboards.model_GPT import change_model_kb
 from keyboards.AI_chooser import change_AI_kb
-from config import GPT_models, AI_models
+from config import GPT_models, AI_models, bot
 from keyboards.settings_kb import multi_mode_kb
 from keyboards.start_kb import start_kb
 from keyboards.roles_kb import role_kb
@@ -9,20 +11,39 @@ from context import *
 from aiogram.utils.exceptions import MessageNotModified
 from keyboards.slots_kb import *
 from AI.multi_ans import *
+from keyboards.sub_inl_kb import get_subscription_kb
 
 
 def AI_handlers(dp):
     @dp.message_handler(commands=['change_model'])
     async def change_model(message: types.Message):
+        user_id = message.from_user.id
+        if not await check_user_subscription(bot, user_id):
+            await message.answer(
+                "❗ Для использования бота подпишитесь на канал:",
+                reply_markup=get_subscription_kb(REQUIRED_CHANNEL))
+            return
         await message.reply("Пожалуйста, выберите модель", reply_markup=change_model_kb)
 
 
     @dp.message_handler(commands=["change_AI"])
     async def change_ai(message: types.Message):
+        user_id = message.from_user.id
+        if not await check_user_subscription(bot, user_id):
+            await message.answer(
+                "❗ Для использования бота подпишитесь на канал:",
+                reply_markup=get_subscription_kb(REQUIRED_CHANNEL))
+            return
         await message.answer("Пожалуйста, выберите нейросеть", reply_markup=change_AI_kb)
 
     @dp.message_handler(lambda message: message.text in ['Сменить модель', 'Сменить ИИ', 'Сменить роль'])
     async def change_func(message: types.Message):
+        user_id = message.from_user.id
+        if not await check_user_subscription(bot, user_id):
+            await message.answer(
+                "❗ Для использования бота подпишитесь на канал:",
+                reply_markup=get_subscription_kb(REQUIRED_CHANNEL))
+            return
         if message.text == 'Сменить ИИ':
             await message.answer("Пожалуйста, выберите нейросеть", reply_markup=change_AI_kb)
         elif message.text == 'Сменить модель':
@@ -32,6 +53,12 @@ def AI_handlers(dp):
 
     @dp.message_handler(lambda message: message.text in GPT_models)
     async def choose_model(message: types.Message):
+        user_id = message.from_user.id
+        if not await check_user_subscription(bot, user_id):
+            await message.answer(
+                "❗ Для использования бота подпишитесь на канал:",
+                reply_markup=get_subscription_kb(REQUIRED_CHANNEL))
+            return
         user_id = message.from_user.id
         model = {
             "GPT-3.5": "gpt-3.5-turbo",
@@ -48,6 +75,11 @@ def AI_handlers(dp):
     @dp.message_handler(lambda message: message.text in AI_models)
     async def choose_ai(message: types.Message):
         user_id = message.from_user.id
+        if not await check_user_subscription(bot, user_id):
+            await message.answer(
+                "❗ Для использования бота подпишитесь на канал:",
+                reply_markup=get_subscription_kb(REQUIRED_CHANNEL))
+            return
         ai = {
             "Yandex GPT": "Yandex",
             "Chat GPT": "GPT",
@@ -62,6 +94,11 @@ def AI_handlers(dp):
     @dp.message_handler(commands=["clear_context"])
     async def clear_chat_context(message: types.Message):
         user_id = message.from_user.id
+        if not await check_user_subscription(bot, user_id):
+            await message.answer(
+                "❗ Для использования бота подпишитесь на канал:",
+                reply_markup=get_subscription_kb(REQUIRED_CHANNEL))
+            return
         clear_context(user_id)
         await message.reply("Контекст беседы очищен.")
         await message.reply("Привет! Я бот для общения с ChatGPT. Используйте команды в меню.",

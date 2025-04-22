@@ -1,11 +1,20 @@
 from aiogram import types
-from keyboards.slots_kb import *
-from slots import *
 
+from checkers.chanel_checker import check_user_subscription, REQUIRED_CHANNEL
+from keyboards.slots_kb import *
+from keyboards.sub_inl_kb import get_subscription_kb
+from slots import *
+from config import *
 
 def slots_handlers(dp):
     @dp.message_handler(lambda message: message.text in ['Слоты сохранения'])
     async def slots_handler(message: types.Message):
+        user_id = message.from_user.id
+        if not await check_user_subscription(bot, user_id):
+            await message.answer(
+                "❗ Для использования бота подпишитесь на канал:",
+                reply_markup=get_subscription_kb(REQUIRED_CHANNEL))
+            return
         if message.text == 'Слоты сохранения':
             await message.reply("Выберите слот:", reply_markup=slots_num_kb)
 
