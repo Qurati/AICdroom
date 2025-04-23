@@ -8,7 +8,6 @@ async def set_commands(bot):
         BotCommand("change_ai", "Сменить ИИ"),
         BotCommand("change_role", "Сменить роль"),
         BotCommand("clear_context", "Очистка контекста"),
-        BotCommand("stats", "Моя статистика"),
     ]
     await bot.set_my_commands(private_commands, scope=BotCommandScopeDefault())
 

@@ -8,10 +8,11 @@ from handlers.slots_handlers import *
 from AI.AI_func import *
 from handlers.group_inline_handlers import group_inline_handler
 from handlers.sub_handlers import *
+from aiogram.contrib.fsm_storage.memory import MemoryStorage
 
 # запуск бота и диспетчера
-
-dp = Dispatcher(bot)
+storage = MemoryStorage()
+dp = Dispatcher(bot, storage=storage)
 
 #Создание БД
 create_db()

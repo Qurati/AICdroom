@@ -36,7 +36,7 @@ def AI_handlers(dp):
             return
         await message.answer("Пожалуйста, выберите нейросеть", reply_markup=change_AI_kb)
 
-    @dp.message_handler(lambda message: message.text in ['Сменить модель', 'Сменить ИИ', 'Сменить роль'])
+    @dp.message_handler(lambda message: message.text in ['Выбрать модель', 'Выбрать ИИ', 'Выбрать роль'])
     async def change_func(message: types.Message):
         user_id = message.from_user.id
         if not await check_user_subscription(bot, user_id):
@@ -44,11 +44,11 @@ def AI_handlers(dp):
                 "❗ Для использования бота подпишитесь на канал:",
                 reply_markup=get_subscription_kb(REQUIRED_CHANNEL))
             return
-        if message.text == 'Сменить ИИ':
+        if message.text == 'Выбрать ИИ':
             await message.answer("Пожалуйста, выберите нейросеть", reply_markup=change_AI_kb)
-        elif message.text == 'Сменить модель':
+        elif message.text == 'Выбрать модель':
             await message.reply("Пожалуйста, выберите модель", reply_markup=change_model_kb)
-        elif message.text == 'Сменить роль':
+        elif message.text == 'Выбрать роль':
             await message.reply("Выберите новую роль:", reply_markup=role_kb)
 
     @dp.message_handler(lambda message: message.text in GPT_models)

@@ -48,6 +48,13 @@ def create_db():
                             message_count INTEGER DEFAULT 0,
                             FOREIGN KEY(user_id) REFERENCES database(user_id)
                           )''')
+    # таблица для записи слотов
+    cursor.execute('''CREATE TABLE IF NOT EXISTS slots (
+        user_id INTEGER,
+        slot_id INTEGER,
+        name TEXT DEFAULT 'Без названия',
+        context TEXT DEFAULT ''
+        );''')
     conn.commit()
     conn.close()
 
@@ -103,3 +110,36 @@ def get_active_ai_list(user_id):
     if not row or not row[0]:
         return ["GPT"]  # по умолчанию
     return ast.literal_eval(row[0])
+
+
+def rename_slot(user_id: int, slot_id: int, new_name: str):
+    conn, cursor = get_cursor()
+
+    # Проверка, есть ли слот
+    cursor.execute("SELECT 1 FROM slots WHERE user_id = ? AND slot_id = ?", (user_id, slot_id))
+    exists = cursor.fetchone()
+
+    if exists:
+        cursor.execute(
+            "UPDATE slots SET name = ? WHERE user_id = ? AND slot_id = ?",
+            (new_name, user_id, slot_id)
+        )
+    else:
+        cursor.execute(
+            "INSERT INTO slots (user_id, slot_id, name) VALUES (?, ?, ?)",
+            (user_id, slot_id, new_name)
+        )
+
+    conn.commit()
+    conn.close()
+
+
+def get_slot_name(user_id: int, slot_id: int) -> str:
+    conn, cursor = get_cursor()
+    cursor.execute(
+        "SELECT name FROM slots WHERE user_id = ? AND slot_id = ?",
+        (user_id, slot_id)
+    )
+    row = cursor.fetchone()
+    conn.close()
+    return row[0] if row else "Без названия"

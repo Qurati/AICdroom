@@ -64,35 +64,6 @@ def start_com(dp):
         await message.answer("Введите ваш вопрос:")
         await message.answer("Я бот, использующий различные ИИ для ответа на ваши вопросы.")
 
-    @dp.message_handler(commands=["stats"])
-    async def show_stats(message: types.Message):
-        user_id = message.from_user.id
-        if not await check_user_subscription(bot, user_id):
-            await message.answer(
-                "❗ Для использования бота подпишитесь на канал:",
-                reply_markup=get_subscription_kb(REQUIRED_CHANNEL))
-            return
-        await message.answer("Введите ваш вопрос:")
-        stats = get_user_stats(message.from_user.id)
-        if stats['ai'] == "Yandex":
-            ai = "Yandex GPT"
-        elif stats['ai'] == "GPT":
-            ai = "Chat GPT"
-        elif stats['ai'] == "Giga":
-            ai = "GigaChat"
-        else:
-            ai = None
-        text = (
-            f"📊 *Ваша статистика:*\n"
-            f"🧠 Активный ИИ: `{stats['ai']}`\n"
-            f"📦 Модель: `{ai}`\n"
-            f"🎭 Роль: `{stats['role']}`\n"
-            f"🗂 Контекст: `{stats['context']} сообщений`\n"
-            f"💾 Всего сохранено в слотах: `{stats['slots']}`"
-        )
-
-        await message.reply(text, parse_mode="Markdown")
-
     @dp.message_handler(lambda message: message.text in ['Профиль'])
     async def profile_info(message: types.Message):
         user_id = message.from_user.id
@@ -101,8 +72,15 @@ def start_com(dp):
                 "❗ Для использования бота подпишитесь на канал:",
                 reply_markup=get_subscription_kb(REQUIRED_CHANNEL))
             return
-        await message.answer("Введите ваш вопрос:")
+        roles_map = {
+            "Ты преподаватель, объясняющий просто и понятно.": "Учитель",
+            "Ты внимательный и поддерживающий психолог.": "Психолог",
+            "Ты эксперт по программированию, отвечаешь кодом и ясно.": "Программист",
+            "Ты технический специалист службы поддержки.": "Техподдержка",
+            "assistant": 'Ассистент'
+        }
         profile = get_profile(user_id, message.from_user.username)
+        stats = get_user_stats(message.from_user.id)
         if profile['ai'] == "Yandex":
             ai = "Yandex GPT"
         elif profile['ai'] == "GPT":
@@ -111,16 +89,26 @@ def start_com(dp):
             ai = "GigaChat"
         else:
             ai = None
-        profile_text = f"""
+        if ai == 'Chat GPT':
+            profile_text = f"""
+                      👤 *Профиль пользователя*  
+                🆔 ID: `{profile['user_id']}`  
+                📛 Имя: `{profile['username']}`  
+                💰Кредиты: Делается
+                🤖 ИИ - роль: `{profile['model']} - {roles_map[stats['role']]}`  
+                💬 Сообщений написано: `{profile['message_count']}`
+                """
+        else:
+            profile_text = f"""
           👤 *Профиль пользователя*  
     🆔 ID: `{profile['user_id']}`  
     📛 Имя: `{profile['username']}`  
-    🤖 Выбранный ИИ: `{ai}`  
-    🛠 Модель Chat GPT: `{profile['model']}`  
+    💰Кредиты: Делается
+    🤖 ИИ - роль: `{ai} - {roles_map[stats['role']]}`  
     💬 Сообщений написано: `{profile['message_count']}`
     """
 
-        await message.reply(profile_text, parse_mode="MarkdownV2")
+        await message.reply(profile_text, parse_mode="Markdown")
 
     @dp.message_handler(lambda message: message.text in ['Настройки', 'Вернуться'])
     async def menu_handler(message: types.Message):
