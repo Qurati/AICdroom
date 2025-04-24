@@ -11,5 +11,6 @@ async def set_commands(bot):
     ]
     await bot.set_my_commands(private_commands, scope=BotCommandScopeDefault())
 
-    # 🧑‍🤝‍🧑 Очистить меню в ГРУППАХ
     await bot.set_my_commands([], scope=BotCommandScopeAllGroupChats())
+
+

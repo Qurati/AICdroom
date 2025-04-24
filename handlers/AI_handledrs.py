@@ -1,18 +1,10 @@
 from aiogram import types
 
 from checkers.chanel_checker import check_user_subscription, REQUIRED_CHANNEL
-from keyboards.model_GPT import change_model_kb
-from keyboards.AI_chooser import change_AI_kb
-from config import GPT_models, AI_models, bot
-from keyboards.settings_kb import multi_mode_kb
-from keyboards.start_kb import start_kb
-from keyboards.roles_kb import role_kb
+from config import *
 from context import *
 from aiogram.utils.exceptions import MessageNotModified
-from keyboards.slots_kb import *
-from AI.multi_ans import *
-from keyboards.sub_inl_kb import get_subscription_kb
-
+from kb import *
 
 def AI_handlers(dp):
     @dp.message_handler(commands=['change_model'])

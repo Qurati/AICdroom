@@ -1,10 +1,9 @@
 from aiogram import types
-from keyboards.start_kb import start_kb
-from keyboards.sub_inl_kb import get_subscription_kb
 from profile import *
-from config import bot
-from keyboards.settings_kb import *
+from config import *
 from checkers.chanel_checker import *
+from kb import *
+
 
 def start_com(dp):
     @dp.message_handler(commands=['start'])

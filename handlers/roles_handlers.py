@@ -1,11 +1,8 @@
 from checkers.chanel_checker import check_user_subscription, REQUIRED_CHANNEL
-from keyboards.roles_kb import role_kb
 from aiogram import types
-
-from keyboards.sub_inl_kb import get_subscription_kb
-from roles import set_role, get_role
-from keyboards.start_kb import start_kb
-from config import bot
+from roles import set_role
+from config import *
+from kb import *
 
 roles_map = {
     "Учитель": "Ты преподаватель, объясняющий просто и понятно.",

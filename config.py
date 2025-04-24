@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 from aiogram import Bot
 
+
 load_dotenv()
 openAI_key = os.getenv('openAI_key')
 API_TOKEN = os.getenv('API_TOKEN')
@@ -12,3 +13,4 @@ AI_models = ['Chat GPT', 'Yandex GPT', 'GigaChat']
 
 bot = Bot(token=API_TOKEN,)
 proxies = os.getenv('proxies')
+
