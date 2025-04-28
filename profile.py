@@ -18,6 +18,9 @@ def get_profile(user_id, username_tg):
     username = cursor.fetchone()
     username = username[0] if username else username_tg
 
+    cursor.execute("SELECT credits FROM database WHERE user_id = ?", (user_id,))
+    credits_ = cursor.fetchone()[0]
+
     conn.close()
 
     return {
@@ -25,7 +28,8 @@ def get_profile(user_id, username_tg):
         "username": username,
         "ai": ai,
         "model": model,
-        "message_count": message_count
+        "message_count": message_count,
+        "credits": credits_
     }
 
 

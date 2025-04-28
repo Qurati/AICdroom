@@ -102,12 +102,12 @@ def start_com(dp):
           👤 *Профиль пользователя*  
     🆔 ID: `{profile['user_id']}`  
     📛 Имя: `{profile['username']}`  
-    💰Кредиты: Делается
+    💰Кредиты: `{profile['credits']}🪙`  
     🤖 ИИ - роль: `{ai} - {roles_map[stats['role']]}`  
     💬 Сообщений написано: `{profile['message_count']}`
     """
 
-        await message.reply(profile_text, parse_mode="Markdown")
+        await message.reply(profile_text, parse_mode="Markdown", reply_markup=credit_btns)
 
     @dp.message_handler(lambda message: message.text in ['Настройки', 'Вернуться'])
     async def menu_handler(message: types.Message):

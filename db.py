@@ -20,10 +20,11 @@ def create_db():
     cursor.execute('''CREATE TABLE IF NOT EXISTS database (
                         user_id INTEGER PRIMARY KEY,
                         model TEXT DEFAULT 'None',
-                        AI TEXT DEFAULT 'None',
+                        AI TEXT DEFAULT 'Yandex',
                         role TEXT DEFAULT 'assistant',
-                        active_ai TEXT DEFAULT '["GPT"]',
-                        multi_mode INTEGER DEFAULT 0);''' )
+                        active_ai TEXT DEFAULT '[]',
+                        multi_mode INTEGER DEFAULT 0,
+                        credits INTEGER DEFAULT 0);''' )
 
     #таблица для записи контекста
     cursor.execute('''CREATE TABLE IF NOT EXISTS context (
@@ -143,3 +144,25 @@ def get_slot_name(user_id: int, slot_id: int) -> str:
     row = cursor.fetchone()
     conn.close()
     return row[0] if row else "Без названия"
+
+def get_user_credits(user_id: int) -> int:
+    conn, cursor = get_cursor()
+    cursor = conn.cursor()
+    cursor.execute("SELECT credits FROM database WHERE user_id = ?", (user_id,))
+    row = cursor.fetchone()
+    conn.close()
+    return row[0] if row else 0
+
+def add_user_credits(user_id: int, amount: int):
+    conn, cursor = get_cursor()
+    cursor = conn.cursor()
+    cursor.execute("UPDATE database SET credits = credits + ? WHERE user_id = ?", (amount, user_id))
+    conn.commit()
+    conn.close()
+
+def set_user_credits(user_id: int, amount: int):
+    conn, cursor = get_cursor()
+    cursor = conn.cursor()
+    cursor.execute("UPDATE database SET credits = ? WHERE user_id = ?", (amount, user_id))
+    conn.commit()
+    conn.close()

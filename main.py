@@ -9,6 +9,7 @@ from AI.AI_func import *
 from handlers.group_inline_handlers import group_inline_handler
 from handlers.sub_handlers import *
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
+from bank.credits import start_bank
 
 # запуск бота и диспетчера
 storage = MemoryStorage()
@@ -28,6 +29,7 @@ roles_handlers(dp)
 slots_handlers(dp)
 group_inline_handler(dp)
 subs_handlers(dp)
+start_bank(dp)
 
 #В последнюю очередь запускаем ответы
 start_answer(dp)

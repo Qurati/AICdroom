@@ -102,3 +102,7 @@ role_kb.add(KeyboardButton("Техподдержка"),
 role_kb.add(KeyboardButton("Сбросить роль"))
 role_kb.add(KeyboardButton("Вернуться"))
 
+credit_btns = InlineKeyboardMarkup(row_width=1).add(InlineKeyboardButton(
+        f"Купить кредиты",
+        callback_data="buy_credits"
+))
