@@ -1,5 +1,3 @@
-from numpy.distutils.command.config import config
-
 from AI.gpt import *
 from AI.yandex import *
 from AI.giga import *
@@ -10,8 +8,6 @@ from AI.multi_ans import *
 # Установите прокси
 openai.proxy = eval(proxies)
 openai.api_key = openAI_key
-
-
 
 def req(msg):
     try:
