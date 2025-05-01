@@ -664,7 +664,7 @@
 /Lib/site-packages/pip/_vendor/pygments/formatters/terminal256.py
 /Lib/site-packages/pip/_vendor/rich/terminal_theme.py
 /Lib/site-packages/setuptools/command/test.py
-/test.py
+/bot.py
 /Lib/site-packages/pip/_vendor/pyparsing/testing.py
 /Lib/site-packages/pkg_resources/_vendor/pyparsing/testing.py
 /Lib/site-packages/setuptools/_vendor/pyparsing/testing.py
