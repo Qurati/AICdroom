@@ -32,8 +32,9 @@ def start_answer(dp):
                 await loading_msg.edit_text("⚠️ Ошибка форматирования ответа.\n\n" + answer["answer"])
 
         requests = get_user_stats(user_id)['requests'][0]
-        if requests > 0 and answer['status']:
-            await message.answer(f"✅ У вас осталось {requests} запросов!")
+        if requests > 0:
+            if answer['status']:
+                await message.answer(f"✅ У вас осталось {requests} запросов!")
         else:
             await message.answer(f"🚫 У вас не осталось запросов!")
             return

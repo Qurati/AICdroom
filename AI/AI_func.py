@@ -32,12 +32,12 @@ def req(msg):
         for ai in ai_list:
 
             if ai == 'None':
-                return "Пожалуйста, выберите ИИ"
+                return {'answer': "Пожалуйста, выберите ИИ", 'status': False}
 
             ######### GPT #########
             if ai == 'GPT':
                 if model == 'None':
-                    return 'Пожалуйста, выберите модель'
+                    return {'answer': 'Пожалуйста, выберите модель', 'status': False}
                 answer = format_response(role_text, get_gpt_answer(model, role_text, user_id, msg_text, history), "ChatGPT")
                 answers.append(answer)
 

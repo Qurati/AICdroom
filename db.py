@@ -1,7 +1,6 @@
 import sqlite3
 import json
 import ast
-from datetime import datetime
 
 
 def connect():
