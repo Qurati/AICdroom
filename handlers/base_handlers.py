@@ -1,7 +1,7 @@
 from aiogram import types
 from profile import *
 from config import *
-from checkers.chanel_checker import *
+from checkers.channel_checker import *
 from kb import *
 
 
@@ -102,7 +102,8 @@ def start_com(dp):
           👤 *Профиль пользователя*  
     🆔 ID: `{profile['user_id']}`  
     📛 Имя: `{profile['username']}`  
-    💰Кредиты: `{profile['credits']}🪙`  
+    💰 Кредиты: `{profile['credits']}🪙`  
+    🔁 Запросов осталось: `{stats['requests'][0]}`
     🤖 ИИ - роль: `{ai} - {roles_map[stats['role']]}`  
     💬 Сообщений написано: `{profile['message_count']}`
     """

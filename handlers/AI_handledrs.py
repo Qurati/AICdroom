@@ -1,6 +1,6 @@
 from aiogram import types
 
-from checkers.chanel_checker import check_user_subscription, REQUIRED_CHANNEL
+from checkers.channel_checker import check_user_subscription, REQUIRED_CHANNEL
 from config import *
 from context import *
 from aiogram.utils.exceptions import MessageNotModified

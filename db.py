@@ -1,6 +1,8 @@
 import sqlite3
 import json
 import ast
+from datetime import datetime
+
 
 def connect():
     conn = sqlite3.connect("database.db", check_same_thread=False)
@@ -24,7 +26,9 @@ def create_db():
                         role TEXT DEFAULT 'assistant',
                         active_ai TEXT DEFAULT '[]',
                         multi_mode INTEGER DEFAULT 0,
-                        credits INTEGER DEFAULT 0);''' )
+                        credits INTEGER DEFAULT 0,
+                        daily_requests_left INTEGER DEFAULT 20,
+                        last_request_date TEXT);''' )
 
     #таблица для записи контекста
     cursor.execute('''CREATE TABLE IF NOT EXISTS context (
@@ -74,6 +78,10 @@ def get_user_stats(user_id):
     # ИИ, модель, роль
     cursor.execute("SELECT AI, model, role FROM database WHERE user_id = ?", (user_id,))
     data = cursor.fetchone()
+
+    cursor.execute("SELECT daily_requests_left FROM database WHERE user_id = ?", (user_id,))
+    requests = cursor.fetchone()
+
     conn.close()
 
     ai = data[0] if data else "None"
@@ -85,7 +93,8 @@ def get_user_stats(user_id):
         "slots": slots_total,
         "ai": ai,
         "model": model,
-        "role": role
+        "role": role,
+        "requests": requests
     }
 
 def get_ai_model_role(user_id):
@@ -112,7 +121,6 @@ def get_active_ai_list(user_id):
         return ["GPT"]  # по умолчанию
     return ast.literal_eval(row[0])
 
-
 def rename_slot(user_id: int, slot_id: int, new_name: str):
     conn, cursor = get_cursor()
 
@@ -133,7 +141,6 @@ def rename_slot(user_id: int, slot_id: int, new_name: str):
 
     conn.commit()
     conn.close()
-
 
 def get_slot_name(user_id: int, slot_id: int) -> str:
     conn, cursor = get_cursor()
@@ -162,7 +169,16 @@ def add_user_credits(user_id: int, amount: int):
 
 def set_user_credits(user_id: int, amount: int):
     conn, cursor = get_cursor()
-    cursor = conn.cursor()
     cursor.execute("UPDATE database SET credits = ? WHERE user_id = ?", (amount, user_id))
+    conn.commit()
+    conn.close()
+
+def deduct_requests(user_id: int, count: int = 1):
+    conn, cursor = get_cursor()
+    cursor.execute("""
+            UPDATE database
+            SET daily_requests_left = MAX(daily_requests_left - ?, 0)
+            WHERE user_id = ?
+        """, (count, user_id))
     conn.commit()
     conn.close()

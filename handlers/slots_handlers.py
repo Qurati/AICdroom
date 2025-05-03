@@ -1,5 +1,5 @@
 from aiogram import types
-from checkers.chanel_checker import check_user_subscription, REQUIRED_CHANNEL
+from checkers.channel_checker import check_user_subscription, REQUIRED_CHANNEL
 from slots import *
 from kb import *
 from config import *

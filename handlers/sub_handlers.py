@@ -1,5 +1,5 @@
 from aiogram import types
-from checkers.chanel_checker import REQUIRED_CHANNEL
+from checkers.channel_checker import REQUIRED_CHANNEL
 from config import bot
 
 

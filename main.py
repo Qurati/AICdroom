@@ -10,7 +10,19 @@ from handlers.group_inline_handlers import group_inline_handler
 from handlers.sub_handlers import *
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from bank.credits import start_bank
+from bank.shop import start_shop
+from req_update import reset_daily_limits
+import asyncio
+import logging
 
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.FileHandler("bot.log", encoding='utf-8'),
+        logging.StreamHandler()
+    ]
+)
 # запуск бота и диспетчера
 storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
@@ -30,10 +42,16 @@ slots_handlers(dp)
 group_inline_handler(dp)
 subs_handlers(dp)
 start_bank(dp)
+start_shop(dp)
 
 #В последнюю очередь запускаем ответы
 start_answer(dp)
 
+async def main():
+    # Запускаем фоновую задачу
+    asyncio.create_task(reset_daily_limits(bot))
+    # Запуск бота
+    await dp.start_polling()
 
 if __name__ == "__main__":
-    executor.start_polling(dp, on_startup=on_startup, skip_updates=True)
+    asyncio.run(main())

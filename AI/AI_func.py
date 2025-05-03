@@ -29,8 +29,8 @@ def req(msg):
             ai_list = get_active_ai_list(user_id)
         else:
             ai_list = [single_ai]
-
         for ai in ai_list:
+
             if ai == 'None':
                 return "Пожалуйста, выберите ИИ"
 
@@ -51,8 +51,8 @@ def req(msg):
             elif ai == 'GigaChat' or ai == 'Giga':
                 answer = format_response(role_text, get_giga_answer(msg_text, user_id), "GigaChat")
                 answers.append(answer)
+        return {'answer':"\n\n".join(answers), 'status': True}
 
-        return "\n\n".join(answers)
 
     except Exception as e:
-        return f'Ошибка: {e}'
+        return {'answer': f'Ошибка: {e}', 'status': False}

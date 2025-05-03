@@ -1,4 +1,4 @@
-from checkers.chanel_checker import check_user_subscription, REQUIRED_CHANNEL
+from checkers.channel_checker import check_user_subscription, REQUIRED_CHANNEL
 from aiogram import types
 from roles import set_role
 from config import *
