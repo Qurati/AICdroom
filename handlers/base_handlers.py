@@ -90,14 +90,14 @@ def start_com(dp):
             ai = None
         if ai == 'Chat GPT':
             profile_text = f"""
-                      👤 *Профиль пользователя*  
-                🆔 ID: `{profile['user_id']}`  
-                📛 Имя: `{profile['username']}`  
-                💰 Кредиты: `{profile['credits']}🪙`  
-                🔁 Запросов осталось: `{stats['requests'][0]}`
-                🤖 ИИ - роль: `{profile['model']} - {roles_map[stats['role']]}`  
-                💬 Сообщений написано: `{profile['message_count']}`
-                """
+          👤 *Профиль пользователя*  
+    🆔 ID: `{profile['user_id']}`  
+    📛 Имя: `{profile['username']}`  
+    💰 Кредиты: `{profile['credits']}🪙`  
+    🔁 Запросов осталось: `{stats['requests'][0]}`
+    🤖 ИИ - роль: `{profile['model']} - {roles_map[stats['role']]}`  
+    💬 Сообщений написано: `{profile['message_count']}`
+    """
         else:
             profile_text = f"""
           👤 *Профиль пользователя*  
