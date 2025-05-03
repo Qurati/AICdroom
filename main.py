@@ -49,7 +49,7 @@ start_answer(dp)
 
 async def main():
     # Запускаем фоновую задачу
-    asyncio.create_task(reset_daily_limits(bot))
+    asyncio.create_task(reset_daily_limits())
     # Запуск бота
     await dp.start_polling()
 

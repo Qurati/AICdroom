@@ -2,9 +2,11 @@ import asyncio
 import aiosqlite
 from datetime import datetime, timedelta
 import logging
-ADMIN_ID = 1283072914  # Укажи свой Telegram ID
+from config import *
+import ast
+admins_id = ast.literal_eval(admins)  # Укажи свой Telegram ID
 
-async def reset_daily_limits(bot):
+async def reset_daily_limits():
     while True:
         now = datetime.now()
         next_run = datetime.combine(now + timedelta(days=1), datetime.min.time())
@@ -25,7 +27,8 @@ async def reset_daily_limits(bot):
         logging.info(msg)
 
         try:
-            await bot.send_message(ADMIN_ID, msg)
+            for i in admins_id:
+                await bot.send_message(i, msg)
         except Exception as e:
             logging.warning(f"Не удалось отправить сообщение админу: {e}")
 
