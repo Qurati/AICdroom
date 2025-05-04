@@ -21,7 +21,7 @@ def start_com(dp):
         user_id = message.from_user.id
         cursor.execute("INSERT OR IGNORE INTO database (user_id) VALUES (?)", (user_id,))
         conn.commit()
-        await message.reply("Привет! Я бот для общения с ChatGPT. Используйте команды в меню.",
+        await message.reply("Привет! Я бот для общения с нейронными сетями. Для начала выбери нужную тебе ИИ (по умолчанию Yandex GPT). Если выбираешь Chat GPT, то не забудь выбрать модель. \nПриятного пользования!",
                                 reply_markup=start_kb(message))
 
     @dp.message_handler(commands=["set_username"])
@@ -34,7 +34,7 @@ def start_com(dp):
             return
         args = message.text.split(maxsplit=1)
         if len(args) < 2:
-            await message.reply("❌ Используйте: `/set_username Ваше_Имя`")
+            await message.reply("❌ Используйте: `/set_username Ваше Имя`")
             return
 
         new_username = args[1]

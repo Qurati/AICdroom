@@ -25,25 +25,33 @@ def group_inline_handler(dp):
         else:
             ai_list = [single_ai]
         for ai in ai_list:
+
             if ai == "GPT":
                 answer = get_gpt_answer_inline(user_input, user_id, model, role)
-                answers.append(answer)
+                answers.append(answer['answer'])
                 ai_name = "ChatGPT"
             elif ai == "Yandex":
                 answer = get_yandex_answer_inline(user_input, role)
-                answers.append(answer)
+                answers.append(answer['answer'])
                 ai_name = "YandexGPT"
             elif ai == 'GigaChat' or ai == "Giga":
                 answer = get_giga_answer_inline(user_input)
-                answers.append(answer)
+                answers.append(answer['answer'])
                 ai_name = "GigaChat"
             else:
-                answer = "Пожалуйста, выберите ИИ в профиле."
+                answer = {"answer": "Пожалуйста, выберите ИИ в профиле.","status": True}
                 ai_name = "Не выбран"
 
+            requests = get_user_stats(user_id)['requests'][0]
+            if requests > 0:
+                if answer['status']:
+                    deduct_requests(user_id, 1)
+            else:
+                res.append(f"🚫 У вас не осталось запросов!")
+                return
             # Экранируем все поля для MarkdownV2
             esc_question = escape_md(user_input)
-            esc_answer = escape_md(answer)
+            esc_answer = escape_md(answer['answer'])
             esc_ai = escape_md(ai_name)
 
             message_text = (
@@ -53,7 +61,7 @@ def group_inline_handler(dp):
             result = InlineQueryResultArticle(
                 id=str(uuid.uuid4()),
                 title=f"Ответ от {ai_name}",
-                description=answer[:100].replace("\n", " "),
+                description=answer['answer'][:100].replace("\n", " "),
                 input_message_content=InputTextMessageContent(
                     message_text=message_text,
                     parse_mode="MarkdownV2",

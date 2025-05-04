@@ -20,9 +20,6 @@ def start_answer(dp):
         loading_msg = await message.answer("🔄 Обрабатываю ваш запрос...")
         await bot.send_chat_action(message.chat.id, action="typing")
         answer = req(message)  # или await req(message)["answer"]
-        if answer['status']:
-            request_count = len(get_active_ai_list(user_id)) if is_multi_mode(user_id) else 1
-            deduct_requests(user_id, request_count)
         try:
             await loading_msg.edit_text(escape_markdown_v2(answer["answer"]), parse_mode="MarkdownV2")
         except:
@@ -34,6 +31,8 @@ def start_answer(dp):
         requests = get_user_stats(user_id)['requests'][0]
         if requests > 0:
             if answer['status']:
+                request_count = len(get_active_ai_list(user_id)) if is_multi_mode(user_id) else 1
+                deduct_requests(user_id, request_count)
                 await message.answer(f"✅ У вас осталось {requests} запросов!")
         else:
             await message.answer(f"🚫 У вас не осталось запросов!")

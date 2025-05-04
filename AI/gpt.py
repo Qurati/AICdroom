@@ -18,6 +18,6 @@ def get_gpt_answer_inline(text, user_id, model, role_text):
     try:
         messages = [{"role": "system", "content": role_text}, {"role": "user", "content": text}]
         response = openai.ChatCompletion.create(model=model, messages=messages)
-        return response.choices[0].message['content']
+        return {"answer": response.choices[0].message['content'], "status": True}
     except Exception as e:
-        return f"Ошибка GPT: {e}"
+        return {"answer": f"Ошибка GPT: {e}", "status": False}

@@ -49,6 +49,6 @@ def get_yandex_answer_inline(text, role_text):
         }
         res = requests.post("https://llm.api.cloud.yandex.net/foundationModels/v1/completion", headers=headers, json=payload)
         data = res.json()
-        return data["result"]["alternatives"][0]["message"]["text"]
+        return {"answer": data["result"]["alternatives"][0]["message"]["text"], "status": True}
     except Exception as e:
-        return f"Ошибка YandexGPT: {e}"
+        return {"answer": f"Ошибка YandexGPT: {e}", "status": False}
