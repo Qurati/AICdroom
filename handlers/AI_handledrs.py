@@ -138,4 +138,4 @@ def AI_handlers(dp):
         mode = is_multi_mode(user_id)
         set_multi_mode(user_id, not mode)
         await call.message.edit_text("Меню настроек:", reply_markup=multi_mode_kb(call.from_user.id))
-        await call.answer(f"Мультиответ {'включен✅' if not mode else 'выключен❌'}")
+        await call.answer(f"{multi_mode} {on if not mode else off}")
