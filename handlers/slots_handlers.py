@@ -1,13 +1,13 @@
 from aiogram import types
 from checkers.channel_checker import check_user_subscription, REQUIRED_CHANNEL
 from slots import *
-from kb import *
+from keyboards.kb import *
 from config import *
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 
 def slots_handlers(dp):
-    @dp.message_handler(lambda message: message.text in ['Сохраненные чаты'])
+    @dp.message_handler(lambda message: message.text in [save_chats])
     async def slots_handler(message: types.Message):
         user_id = message.from_user.id
         if not await check_user_subscription(bot, user_id):
@@ -15,8 +15,7 @@ def slots_handlers(dp):
                 "❗ Для использования бота подпишитесь на канал:",
                 reply_markup=get_subscription_kb(REQUIRED_CHANNEL))
             return
-        if message.text == 'Сохраненные чаты':
-            await message.answer("Выберите слот:", reply_markup=slots_kb(user_id))
+        await message.answer("Выберите слот:", reply_markup=slots_kb(user_id))
 
 
     @dp.callback_query_handler(lambda c: c.data.startswith("slot_"))

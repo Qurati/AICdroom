@@ -3,7 +3,7 @@ from AI.AI_func import req
 from AI.msg_format import *
 from checkers.channel_checker import check_user_subscription, REQUIRED_CHANNEL
 from config import *
-from kb import *
+from keyboards.kb import *
 
 
 def start_answer(dp):

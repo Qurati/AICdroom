@@ -1,10 +1,14 @@
+from distutils.command.config import config
+
 from aiogram import types
 
 from checkers.channel_checker import check_user_subscription, REQUIRED_CHANNEL
 from config import *
+from config import change_model as change_model_
 from context import *
 from aiogram.utils.exceptions import MessageNotModified
-from kb import *
+from keyboards.kb import *
+
 
 def AI_handlers(dp):
     @dp.message_handler(commands=['change_model'])
@@ -28,7 +32,7 @@ def AI_handlers(dp):
             return
         await message.answer("Пожалуйста, выберите нейросеть", reply_markup=change_AI_kb)
 
-    @dp.message_handler(lambda message: message.text in ['Выбрать модель', 'Выбрать ИИ', 'Выбрать роль'])
+    @dp.message_handler(lambda message: message.text in [change_role, change_AI, change_model_])
     async def change_func(message: types.Message):
         user_id = message.from_user.id
         if not await check_user_subscription(bot, user_id):
@@ -36,11 +40,11 @@ def AI_handlers(dp):
                 "❗ Для использования бота подпишитесь на канал:",
                 reply_markup=get_subscription_kb(REQUIRED_CHANNEL))
             return
-        if message.text == 'Выбрать ИИ':
+        if message.text == change_AI:
             await message.answer("Пожалуйста, выберите нейросеть", reply_markup=change_AI_kb)
-        elif message.text == 'Выбрать модель':
+        elif message.text == change_model_:
             await message.reply("Пожалуйста, выберите модель", reply_markup=change_model_kb)
-        elif message.text == 'Выбрать роль':
+        elif message.text == change_role:
             await message.reply("Выберите новую роль:", reply_markup=role_kb)
 
     @dp.message_handler(lambda message: message.text in GPT_models)
@@ -53,10 +57,10 @@ def AI_handlers(dp):
             return
         user_id = message.from_user.id
         model = {
-            "GPT-3.5": "gpt-3.5-turbo",
-            "GPT-4": "gpt-4",
-            "GPT-4o-mini": "gpt-4o-mini",
-            "GPT-4-Turbo": "gpt-4-turbo"
+            gpt_model1: "gpt-3.5-turbo",
+            gpt_model2: "gpt-4",
+            gpt_model3: "gpt-4o-mini",
+            gpt_model4: "gpt-4-turbo"
         }[message.text]
         conn, cursor = get_cursor()
         cursor.execute("UPDATE database SET model = ? WHERE user_id = ?", (model, user_id))
@@ -73,9 +77,9 @@ def AI_handlers(dp):
                 reply_markup=get_subscription_kb(REQUIRED_CHANNEL))
             return
         ai = {
-            "Yandex GPT": "Yandex",
-            "Chat GPT": "GPT",
-            "GigaChat": "Giga",
+            yandex_gpt: "Yandex",
+            chat_gpt: "GPT",
+            giga_chat: "Giga",
         }[message.text]
         conn, cursor = get_cursor()
         cursor.execute("UPDATE database SET AI = ? WHERE user_id = ?", (ai, user_id))
@@ -116,7 +120,7 @@ def AI_handlers(dp):
         active = get_active_ai_list(user_id)
         print(active)
         buttons = []
-        for ai in ["GPT", "GigaChat", "Yandex"]:
+        for ai in bd_ai_list:
             state = "✅" if ai in active else "❌"
             buttons.append(InlineKeyboardButton(f"{state} {ai}", callback_data=f"toggle_ai_{ai}"))
 

@@ -2,7 +2,7 @@ from aiogram import types
 from profile import *
 from config import *
 from checkers.channel_checker import *
-from kb import *
+from keyboards.kb import *
 
 
 def start_com(dp):
@@ -63,7 +63,7 @@ def start_com(dp):
         await message.answer("Введите ваш вопрос:")
         await message.answer("Я бот, использующий различные ИИ для ответа на ваши вопросы.")
 
-    @dp.message_handler(lambda message: message.text in ['Профиль'])
+    @dp.message_handler(lambda message: message.text in [profile])
     async def profile_info(message: types.Message):
         user_id = message.from_user.id
         if not await check_user_subscription(bot, user_id):
@@ -78,40 +78,40 @@ def start_com(dp):
             "Ты технический специалист службы поддержки.": "Техподдержка",
             "assistant": 'Ассистент'
         }
-        profile = get_profile(user_id, message.from_user.username)
+        profile_ = get_profile(user_id, message.from_user.username)
         stats = get_user_stats(message.from_user.id)
-        if profile['ai'] == "Yandex":
+        if profile_['ai'] == "Yandex":
             ai = "Yandex GPT"
-        elif profile['ai'] == "GPT":
+        elif profile_['ai'] == "GPT":
             ai = "Chat GPT"
-        elif profile['ai'] == "Giga":
+        elif profile_['ai'] == "Giga":
             ai = "GigaChat"
         else:
             ai = None
         if ai == 'Chat GPT':
             profile_text = f"""
           👤 *Профиль пользователя*  
-    🆔 ID: `{profile['user_id']}`  
-    📛 Имя: `{profile['username']}`  
-    💰 Кредиты: `{profile['credits']}🪙`  
+    🆔 ID: `{profile_['user_id']}`  
+    📛 Имя: `{profile_['username']}`  
+    💰 Кредиты: `{profile_['credits']}🪙`  
     🔁 Запросов осталось: `{stats['requests'][0]}`
-    🤖 ИИ - роль: `{profile['model']} - {roles_map[stats['role']]}`  
-    💬 Сообщений написано: `{profile['message_count']}`
+    🤖 ИИ - роль: `{profile_['model']} - {roles_map[stats['role']]}`  
+    💬 Сообщений написано: `{profile_['message_count']}`
     """
         else:
             profile_text = f"""
           👤 *Профиль пользователя*  
-    🆔 ID: `{profile['user_id']}`  
-    📛 Имя: `{profile['username']}`  
-    💰 Кредиты: `{profile['credits']}🪙`  
+    🆔 ID: `{profile_['user_id']}`  
+    📛 Имя: `{profile_['username']}`  
+    💰 Кредиты: `{profile_['credits']}🪙`  
     🔁 Запросов осталось: `{stats['requests'][0]}`
     🤖 ИИ - роль: `{ai} - {roles_map[stats['role']]}`  
-    💬 Сообщений написано: `{profile['message_count']}`
+    💬 Сообщений написано: `{profile_['message_count']}`
     """
 
         await message.reply(profile_text, parse_mode="Markdown", reply_markup=credit_btns)
 
-    @dp.message_handler(lambda message: message.text in ['Настройки', 'Вернуться'])
+    @dp.message_handler(lambda message: message.text in [settings, back])
     async def menu_handler(message: types.Message):
         user_id = message.from_user.id
         if not await check_user_subscription(bot, user_id):
@@ -119,7 +119,7 @@ def start_com(dp):
                 "❗ Для использования бота подпишитесь на канал:",
                 reply_markup=get_subscription_kb(REQUIRED_CHANNEL))
             return
-        if message.text == 'Настройки':
+        if message.text == settings:
             await message.answer("Меню настроек:", reply_markup=multi_mode_kb(message.from_user.id))
-        elif message.text == 'Вернуться':
+        elif message.text == back:
             await message.answer('Меню', reply_markup=start_kb(message))
