@@ -4,6 +4,8 @@ from AI.giga import *
 from config import *
 from AI.msg_format import *
 from AI.multi_ans import *
+import requests
+from  roles import *
 
 # Установите прокси
 openai.proxy = eval(proxies)
@@ -43,13 +45,13 @@ def req(msg):
 
             ######### Yandex GPT #########
             elif ai == 'Yandex':
-                answer = format_response(role_text, get_yandex_answer(role_text, history, msg_text, user_id), "YandexGPT")
+                answer = format_response(role_text, get_yandex_answer(role_text, history, msg_text, user_id)['answer'], "YandexGPT")
                 answers.append(answer)
 
             ######### GigaChat #########
 
             elif ai == 'GigaChat' or ai == 'Giga':
-                answer = format_response(role_text, get_giga_answer(msg_text, user_id), "GigaChat")
+                answer = format_response(role_text, get_giga_answer(msg_text, user_id)['answer'], "GigaChat")
                 answers.append(answer)
         return {'answer':"\n\n".join(answers), 'status': True}
 

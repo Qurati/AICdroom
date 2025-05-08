@@ -1,54 +1,41 @@
 import requests
-from config import *
-from roles import get_role
 from context import *
 
 def get_yandex_answer(role_text, history, msg_text, user_id):
-    url = "https://llm.api.cloud.yandex.net/foundationModels/v1/completion"
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Api-Key {YandexGPT_key}"
-    }
-
-    # Преобразуем историю сообщений в формат, который принимает Yandex
-
     messages = [{"role": "system", "text": role_text}]
     for message in history:
         messages.append({"role": message["role"], "text": message["content"]})
     messages.append({"role": "user", "text": msg_text})
 
-    prompt = {
-        "modelUri": "gpt://b1gmmp5rqqqih8ridk52/yandexgpt-lite",
-        "completionOptions": {
-            "stream": False,
-            "temperature": 0.6,
-            "maxTokens": 2000
-        },
+    data = {
+        "ai": "Yandex",
         "messages": messages
     }
 
-    response = requests.post(url, headers=headers, json=prompt)
-    result = response.json()
-    result_text = result['result']['alternatives'][0]['message']['text']
-    save_message(user_id, "user", msg_text)
-    save_message(user_id, "assistant", result_text)
-    return result_text
+    url = "http://127.0.0.1:8000/request"
+    response = requests.post(url, json=data)  # ВАЖНО: именно POST
 
+    if response.json()['answer']['status']:
+        result_text = response.json()['answer']['answer']
+        print(result_text)
+        save_message(user_id, "user", msg_text)
+        save_message(user_id, "assistant", result_text)
+        return {"answer": result_text, "status": True}
+    else:
+        print("Ошибка при обращении к серверу:", response.status_code, response.text)
+        return {"answer": f"❌ Ошибка запроса", "status": False}
 
 
 def get_yandex_answer_inline(text, role_text):
     try:
-        headers = {
-            "Authorization": f"Api-Key {YandexGPT_key}",
-            "Content-Type": "application/json"
+        messages = [{"role": "system", "text": role_text}, {"role": "user", "text": text}]
+        data = {
+            "ai": "Yandex",
+            "messages": messages
         }
-        payload = {
-            "modelUri": "gpt://b1gmmp5rqqqih8ridk52/yandexgpt-lite",
-            "completionOptions": {"stream": False, "temperature": 0.7, "maxTokens": 2000},
-            "messages": [{"role": "system", "text": role_text}, {"role": "user", "text": text}]
-        }
-        res = requests.post("https://llm.api.cloud.yandex.net/foundationModels/v1/completion", headers=headers, json=payload)
-        data = res.json()
-        return {"answer": data["result"]["alternatives"][0]["message"]["text"], "status": True}
+        url = "http://127.0.0.1:8000/request"
+        response = requests.post(url, json=data)
+        result_text = response.json()['answer']['answer']
+        return {"answer": result_text, "status": True}
     except Exception as e:
-        return {"answer": f"Ошибка YandexGPT: {e}", "status": False}
+        return {"answer": f"❌ Ошибка запроса", "status": False}

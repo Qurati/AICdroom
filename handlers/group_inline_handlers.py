@@ -24,51 +24,64 @@ def group_inline_handler(dp):
             ai_list = get_active_ai_list(user_id)
         else:
             ai_list = [single_ai]
-        for ai in ai_list:
-
-            if ai == "GPT":
-                answer = get_gpt_answer_inline(user_input, user_id, model, role)
-                answers.append(answer['answer'])
-                ai_name = "ChatGPT"
-            elif ai == "Yandex":
-                answer = get_yandex_answer_inline(user_input, role)
-                answers.append(answer['answer'])
-                ai_name = "YandexGPT"
-            elif ai == 'GigaChat' or ai == "Giga":
-                answer = get_giga_answer_inline(user_input)
-                answers.append(answer['answer'])
-                ai_name = "GigaChat"
-            else:
-                answer = {"answer": "Пожалуйста, выберите ИИ в профиле.","status": True}
-                ai_name = "Не выбран"
-
-            requests = get_user_stats(user_id)['requests'][0]
-            if requests > 0:
-                if answer['status']:
-                    deduct_requests(user_id, 1)
-            else:
-                res.append(f"🚫 У вас не осталось запросов!")
-                return
-            # Экранируем все поля для MarkdownV2
-            esc_question = escape_md(user_input)
-            esc_answer = escape_md(answer['answer'])
-            esc_ai = escape_md(ai_name)
-
-            message_text = (
-                f"*🟨 Вопрос:*\n{esc_question}\n\n"
-                f"*🟩 Ответ \\({esc_ai}\\):*\n{esc_answer}"
-            )
+        user_requests = get_user_stats(user_id)['requests'][0]
+        if user_requests > 0:
+            for ai in ai_list:
+                if ai == "GPT":
+                    answer = get_gpt_answer_inline(user_input, user_id, model, role)
+                    if answer['status']:
+                        deduct_requests(user_id, 1)
+                    answers.append(answer['answer'])
+                    ai_name = "ChatGPT"
+                elif ai == "Yandex":
+                    answer = get_yandex_answer_inline(user_input, role)
+                    if answer['status']:
+                        deduct_requests(user_id, 1)
+                    print(f'ya {answer}')
+                    answers.append(answer['answer'])
+                    ai_name = "YandexGPT"
+                elif ai == 'GigaChat' or ai == "Giga":
+                    answer = get_giga_answer_inline(user_input)
+                    if answer['status']:
+                        deduct_requests(user_id, 1)
+                    print(f'giga {answer}')
+                    answers.append(answer['answer'])
+                    ai_name = "GigaChat"
+                else:
+                    answer = {"answer": "Пожалуйста, выберите ИИ в профиле.","status": True}
+                    ai_name = "Не выбран"
+                # Экранируем все поля для MarkdownV2
+                esc_question = escape_md(user_input)
+                esc_answer = escape_md(answer['answer'])
+                esc_ai = escape_md(ai_name)
+                message_text = (
+                    f"*🟨 Вопрос:*\n{esc_question}\n\n"
+                    f"*🟩 Ответ \\({esc_ai}\\):*\n{esc_answer}"
+                )
+                result = InlineQueryResultArticle(
+                    id=str(uuid.uuid4()),
+                    title=f"Ответ от {ai_name}",
+                    description=answer['answer'][:100].replace("\n", " "),
+                    input_message_content=InputTextMessageContent(
+                        message_text=message_text,
+                        parse_mode="MarkdownV2",
+                        disable_web_page_preview=True
+                    )
+                )
+                res.append(result)
+        else:
+            escaped_text = escape_md("🚫 У вас не осталось запросов!")
             result = InlineQueryResultArticle(
                 id=str(uuid.uuid4()),
-                title=f"Ответ от {ai_name}",
-                description=answer['answer'][:100].replace("\n", " "),
+                title=f"Системное уведомление",
+                description=escaped_text,
                 input_message_content=InputTextMessageContent(
-                    message_text=message_text,
+                    message_text=escaped_text,
                     parse_mode="MarkdownV2",
                     disable_web_page_preview=True
                 )
             )
-            res.append(result)
+            await inline_query.answer([result], cache_time=1)
 
         await inline_query.answer([*res], cache_time=1)
 

@@ -1,36 +1,32 @@
-from  config import *
 from langchain_core.messages import HumanMessage, SystemMessage
-from langchain_gigachat.chat_models import GigaChat
 from context import *
+import requests
 
-def giga_auth():
-    giga = GigaChat(
-        credentials=GigaChat_key,
-        verify_ssl_certs=False,
-    )
-    return giga
+def get_giga_answer(messages, user_id):
+    url = f"http://127.0.0.1:8000/requestGiga='{messages}'"
+    response = requests.get(url)
+    print(response.json())
+    if response.json()['answer']['status']:
+        result_text = response.json()['answer']['answer']
+        save_message(user_id, "user", messages)
+        save_message(user_id, "assistant", result_text)
+        return {"answer": result_text, "status": True}
 
-
-def get_giga_answer(prompt, user_id):
-    messages = [SystemMessage(
-        content="Ты ассистент."
-    ), HumanMessage(content=prompt)]
-    res = giga_auth().invoke(messages)
-    messages.append(res)
-    save_message(user_id, "user", prompt)
-    save_message(user_id, "assistant", res.content)
-    return res.content
+    else:
+        print("Ошибка при обращении к серверу:", response.status_code, response.text)
+        return {"answer": f"❌ Ошибка запроса", "status": False}
 
 
 
-def get_giga_answer_inline(prompt):
-    try:
-        messages = [SystemMessage(
-            content="Ты ассистент."
-        ), HumanMessage(content=prompt)]
-        res = giga_auth().invoke(messages)
-        messages.append(res)
-        return {"answer": res.content, "status": True}
-    except Exception as e:
-        return {"answer": f'Ошибка Giga Chat: {e}', "status": False}
+def get_giga_answer_inline(messages):
+    url = f"http://127.0.0.1:8000/requestGiga='{messages}'"
+    response = requests.get(url)
+    print(response.json())
+    if response.json()['answer']['status']:
+        result_text = response.json()['answer']['answer']
+        return {"answer": result_text, "status": True}
+
+    else:
+        print("Ошибка при обращении к серверу:", response.status_code, response.text)
+        return {"answer": f"❌ Ошибка запроса", "status": False}
 
