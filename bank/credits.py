@@ -44,7 +44,7 @@ def start_bank(dp):
             amount = int(message.text.strip())
 
             if amount < 10:
-                await message.answer("❗ Минимальная сумма пополнения — 100 ₽. Попробуйте снова.")
+                await message.answer("❗ Минимальная сумма пополнения — 10 ₽. Попробуйте снова.")
                 return
 
             await state.update_data(amount=amount)
@@ -59,7 +59,7 @@ def start_bank(dp):
                 },
                 "confirmation": {
                     "type": "redirect",
-                    "return_url": "https://t.me/your_bot_username"  # куда вернуть после оплаты
+                    "return_url": "https://t.me/AICdroom_bot"  # куда вернуть после оплаты
                 },
                 "capture": True,
                 "description": f"Пополнение на {amount} ₽ от {message.from_user.id}",

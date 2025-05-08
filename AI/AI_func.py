@@ -14,6 +14,7 @@ openai.api_key = openAI_key
 def req(msg):
     try:
         answers = []
+        answers_stat = []
         user_id = msg.from_user.id
         role_text = get_role(user_id)
         history = get_context(user_id)
@@ -40,21 +41,33 @@ def req(msg):
             if ai == 'GPT':
                 if model == 'None':
                     return {'answer': 'Пожалуйста, выберите модель', 'status': False}
-                answer = format_response(role_text, get_gpt_answer(model, role_text, user_id, msg_text, history), "ChatGPT")
+                gpt_ans = get_gpt_answer(model, role_text, user_id, msg_text, history)
+                answer = format_response(role_text, gpt_ans['answer'], "ChatGPT")
+                answers_stat.append(gpt_ans)
                 answers.append(answer)
 
             ######### Yandex GPT #########
             elif ai == 'Yandex':
-                answer = format_response(role_text, get_yandex_answer(role_text, history, msg_text, user_id)['answer'], "YandexGPT")
+                yandex_ans = get_yandex_answer(role_text, history, msg_text, user_id)
+                answer = format_response(role_text, yandex_ans['answer'], "YandexGPT")
+                answers_stat.append(yandex_ans)
                 answers.append(answer)
 
             ######### GigaChat #########
 
             elif ai == 'GigaChat' or ai == 'Giga':
-                answer = format_response(role_text, get_giga_answer(msg_text, user_id)['answer'], "GigaChat")
+                giga_ans = get_giga_answer(msg_text, user_id)
+                answer = format_response(role_text, giga_ans['answer'], "GigaChat")
                 answers.append(answer)
+                answers_stat.append(giga_ans)
+        for answer in answers_stat:
+            if answer['status']:
+                print(answer['status'])
+                pass
+            else:
+                return {'answer': f'❌ Ошибка запроса', 'status': False}
         return {'answer':"\n\n".join(answers), 'status': True}
 
 
     except Exception as e:
-        return {'answer': f'Ошибка: {e}', 'status': False}
+        return {'answer': f'❌ Ошибка запроса', 'status': False}

@@ -1,8 +1,10 @@
-from langchain_core.messages import HumanMessage, SystemMessage
 from context import *
 import requests
 
 def get_giga_answer(messages, user_id):
+
+    #СДЕЛАТЬ ПОДСТРЙОКУ КОНТЕКСТА ПОД GIGA CHAT
+
     url = f"http://127.0.0.1:8000/requestGiga='{messages}'"
     response = requests.get(url)
     print(response.json())
