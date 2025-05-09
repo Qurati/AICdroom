@@ -13,6 +13,7 @@ GPT_models = [gpt_model1, gpt_model2, gpt_model3, gpt_model4]
 AI_models = [chat_gpt, yandex_gpt, giga_chat]
 bd_ai_list = ["GPT", "GigaChat", "Yandex"]
 admins = os.getenv('admins')
+api = os.getenv('api')
 
 bot = Bot(token=API_TOKEN,)
 proxies = os.getenv('proxies')

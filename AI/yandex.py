@@ -1,4 +1,5 @@
 import requests
+from config import *
 from context import *
 
 def get_yandex_answer(role_text, history, msg_text, user_id):
@@ -12,7 +13,7 @@ def get_yandex_answer(role_text, history, msg_text, user_id):
         "messages": messages
     }
 
-    url = "http://127.0.0.1:8000/request"
+    url = f"{api}/request"
     response = requests.post(url, json=data)  # ВАЖНО: именно POST
 
     if response.json()['answer']['status']:
@@ -33,7 +34,7 @@ def get_yandex_answer_inline(text, role_text):
             "ai": "Yandex",
             "messages": messages
         }
-        url = "http://127.0.0.1:8000/request"
+        url = "https://aicdroom-api-qurati.amvera.io/request"
         response = requests.post(url, json=data)
         result_text = response.json()['answer']['answer']
         return {"answer": result_text, "status": True}

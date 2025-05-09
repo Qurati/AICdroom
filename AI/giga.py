@@ -1,11 +1,12 @@
 from context import *
 import requests
+from config import *
 
 def get_giga_answer(messages, user_id):
 
     #СДЕЛАТЬ ПОДСТРЙОКУ КОНТЕКСТА ПОД GIGA CHAT
 
-    url = f"http://127.0.0.1:8000/requestGiga='{messages}'"
+    url = f"{api}/requestGiga='{messages}'"
     response = requests.get(url)
     print(response.json())
     if response.json()['answer']['status']:
@@ -15,13 +16,12 @@ def get_giga_answer(messages, user_id):
         return {"answer": result_text, "status": True}
 
     else:
-        print("Ошибка при обращении к серверу:", response.status_code, response.text)
         return {"answer": f"❌ Ошибка запроса", "status": False}
 
 
 
 def get_giga_answer_inline(messages):
-    url = f"http://127.0.0.1:8000/requestGiga='{messages}'"
+    url = f"https://aicdroom-api-qurati.amvera.io/requestGiga='{messages}'"
     response = requests.get(url)
     print(response.json())
     if response.json()['answer']['status']:
@@ -29,6 +29,5 @@ def get_giga_answer_inline(messages):
         return {"answer": result_text, "status": True}
 
     else:
-        print("Ошибка при обращении к серверу:", response.status_code, response.text)
         return {"answer": f"❌ Ошибка запроса", "status": False}
 

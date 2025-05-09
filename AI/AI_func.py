@@ -4,7 +4,6 @@ from AI.giga import *
 from config import *
 from AI.msg_format import *
 from AI.multi_ans import *
-import requests
 from  roles import *
 
 # Установите прокси

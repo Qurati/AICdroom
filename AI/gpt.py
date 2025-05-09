@@ -1,6 +1,7 @@
 import openai
 from context import *
 import requests
+from config import *
 
 def get_gpt_answer(model, role_text, user_id, msg_text, history):
     messages = [{"role": "system", "content": role_text}] + history + [{"role": "user", "content": msg_text}]
@@ -10,10 +11,11 @@ def get_gpt_answer(model, role_text, user_id, msg_text, history):
         "model": model
     }
 
-    url = "http://127.0.0.1:8000/requestGPT"
+    url = f"{api}/requestGPT"
     try:
         response = requests.post(url, json=data)
-        if response.ok:
+        json_data = response.json()
+        if json_data["answer"]['status']:
             json_data = response.json()
             result_text = json_data["answer"]['answer']
             save_message(user_id, "user", msg_text)
