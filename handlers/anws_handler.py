@@ -33,7 +33,11 @@ def start_answer(dp):
             if answer['status']:
                 request_count = len(get_active_ai_list(user_id)) if is_multi_mode(user_id) else 1
                 deduct_requests(user_id, request_count)
-                await message.answer(f"✅ У вас осталось {requests-request_count} запросов!")
+                if requests-request_count > 0:
+                    await message.answer(f"✅ У вас осталось {requests-request_count} запросов!")
+                if requests - request_count <= 0:
+                    await message.answer(f"🚫 У вас не осталось запросов!")
+
         else:
             await message.answer(f"🚫 У вас не осталось запросов!")
             return
