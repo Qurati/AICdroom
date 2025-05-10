@@ -28,7 +28,7 @@ def group_inline_handler(dp):
         if user_requests > 0:
             for ai in ai_list:
                 if ai == "GPT":
-                    answer = get_gpt_answer_inline(user_input, user_id, model, role)
+                    answer = get_gpt_answer_inline(user_input, model, role)
                     if answer['status']:
                         deduct_requests(user_id, 1)
                     answers.append(answer['answer'])

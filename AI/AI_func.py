@@ -1,14 +1,9 @@
 from AI.gpt import *
 from AI.yandex import *
 from AI.giga import *
-from config import *
 from AI.msg_format import *
 from AI.multi_ans import *
-from  roles import *
-
-# Установите прокси
-openai.proxy = eval(proxies)
-openai.api_key = openAI_key
+from roles import *
 
 def req(msg):
     try:

@@ -27,7 +27,7 @@ def get_gpt_answer(model, role_text, user_id, msg_text, history):
         return {"answer": f"❌ Ошибка запроса: {e}", "status": False}
 
 
-def get_gpt_answer_inline(text, user_id, model, role_text):
+def get_gpt_answer_inline(text, model, role_text):
     try:
         messages = [{"role": "system", "content": role_text}, {"role": "user", "content": text}]
         response = openai.ChatCompletion.create(model=model, messages=messages)
