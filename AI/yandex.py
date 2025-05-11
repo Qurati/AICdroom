@@ -1,6 +1,7 @@
 import requests
 from config import *
-from context import *
+from context.context import *
+
 
 def get_yandex_answer(role_text, history, msg_text, user_id):
     messages = [{"role": "system", "text": role_text}]
@@ -18,7 +19,6 @@ def get_yandex_answer(role_text, history, msg_text, user_id):
 
     if response.json()['answer']['status']:
         result_text = response.json()['answer']['answer']
-        print(result_text)
         save_message(user_id, "user", msg_text)
         save_message(user_id, "assistant", result_text)
         return {"answer": result_text, "status": True}

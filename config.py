@@ -13,5 +13,3 @@ admins = os.getenv('admins')
 api = os.getenv('api')
 
 bot = Bot(token=API_TOKEN,)
-proxies = os.getenv('proxies')
-

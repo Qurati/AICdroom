@@ -5,14 +5,15 @@ from handlers.anws_handler import *
 from handlers.AI_handledrs import *
 from handlers.roles_handlers import *
 from handlers.slots_handlers import *
-from AI.AI_func import *
 from handlers.group_inline_handlers import group_inline_handler
 from handlers.sub_handlers import *
+from handlers.context_handlers import *
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from bank.credits import start_bank
 from bank.shop import start_shop
 from req_update import reset_daily_limits
 import asyncio
+from AI.AI_func import *
 import logging
 
 logging.basicConfig(
@@ -41,6 +42,7 @@ roles_handlers(dp)
 slots_handlers(dp)
 group_inline_handler(dp)
 subs_handlers(dp)
+context_handlers(dp)
 start_bank(dp)
 start_shop(dp)
 

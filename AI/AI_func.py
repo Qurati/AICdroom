@@ -56,7 +56,6 @@ def req(msg):
                 answers_stat.append(giga_ans)
         for answer in answers_stat:
             if answer['status']:
-                print(answer['status'])
                 pass
             else:
                 return {'answer': f'❌ Ошибка запроса', 'status': False}

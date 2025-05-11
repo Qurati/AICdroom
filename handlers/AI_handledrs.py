@@ -1,17 +1,15 @@
-from distutils.command.config import config
-
 from aiogram import types
 
 from checkers.channel_checker import check_user_subscription, REQUIRED_CHANNEL
 from config import *
 from config import change_model as change_model_
-from context import *
+from context.context import *
 from aiogram.utils.exceptions import MessageNotModified
 from keyboards.kb import *
 
 
 def AI_handlers(dp):
-    @dp.message_handler(commands=['change_model'])
+    @dp.message_handler(commands=['change_model_ChatGPT'])
     async def change_model(message: types.Message):
         user_id = message.from_user.id
         if not await check_user_subscription(bot, user_id):
@@ -87,19 +85,6 @@ def AI_handlers(dp):
         conn.close()
         await message.answer(f"Ты выбрал {message.text}. Теперь отправь свой вопрос.", reply_markup=start_kb(message))
 
-    @dp.message_handler(commands=["clear_context"])
-    async def clear_chat_context(message: types.Message):
-        user_id = message.from_user.id
-        if not await check_user_subscription(bot, user_id):
-            await message.answer(
-                "❗ Для использования бота подпишитесь на канал:",
-                reply_markup=get_subscription_kb(REQUIRED_CHANNEL))
-            return
-        clear_context(user_id)
-        await message.reply("Контекст беседы очищен.")
-        await message.reply("Привет! Я бот для общения с ChatGPT. Используйте команды в меню.",
-                            reply_markup=start_kb(message))
-
     @dp.callback_query_handler(lambda c: c.data.startswith("toggle_ai_"))
     async def toggle_ai_selection(call: types.CallbackQuery):
         user_id = call.from_user.id
@@ -114,7 +99,7 @@ def AI_handlers(dp):
         set_active_ai_list(user_id, active)
         await ai_edit_set(call)  # перерисовываем с новыми данными
 
-    @dp.callback_query_handler(text= "edit_ai_set")
+    @dp.callback_query_handler(text = "edit_ai_set")
     async def ai_edit_set(call: types.CallbackQuery):
         user_id = call.from_user.id
         active = get_active_ai_list(user_id)

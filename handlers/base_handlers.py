@@ -42,26 +42,6 @@ def start_com(dp):
 
         await message.reply(f"✅ Имя обновлено на `{new_username}`", parse_mode="Markdown")
 
-    @dp.message_handler(commands=["ask"])
-    async def ask_question(message: types.Message):
-        user_id = message.from_user.id
-        if not await check_user_subscription(bot, user_id):
-            await message.answer(
-                "❗ Для использования бота подпишитесь на канал:",
-                reply_markup=get_subscription_kb(REQUIRED_CHANNEL))
-            return
-        await message.answer("Введите ваш вопрос:")
-
-    @dp.message_handler(commands=["about"])
-    async def about_bot(message: types.Message):
-        user_id = message.from_user.id
-        if not await check_user_subscription(bot, user_id):
-            await message.answer(
-                "❗ Для использования бота подпишитесь на канал:",
-                reply_markup=get_subscription_kb(REQUIRED_CHANNEL))
-            return
-        await message.answer("Введите ваш вопрос:")
-        await message.answer("Я бот, использующий различные ИИ для ответа на ваши вопросы.")
 
     @dp.message_handler(lambda message: message.text in [profile])
     async def profile_info(message: types.Message):

@@ -37,3 +37,8 @@ change_AI = '🤖Выбрать ИИ'
 change_role = '🎭Выбрать роль'
 save_chats = '💾Сохраненные чаты'
 settings = '⚙️Настройки'
+context_title = '💬Контекст'
+
+delete_context = '🗑Удалить контекст'
+delete_context_true = 'Да'
+delete_context_false = 'Нет'

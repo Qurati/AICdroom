@@ -14,10 +14,10 @@ def start_kb(msg):
     if ai =="GPT":
         main_kb.add(KeyboardButton(profile), KeyboardButton(change_model))
         main_kb.add(KeyboardButton(change_AI), KeyboardButton(change_role))
-        main_kb.add(KeyboardButton(save_chats), KeyboardButton(settings))
+        main_kb.add(KeyboardButton(context_title), KeyboardButton(settings)) # save_chats -> context_title
     else:
         main_kb.add(KeyboardButton(profile), KeyboardButton(change_AI))
-        main_kb.add(KeyboardButton(change_role), KeyboardButton(save_chats))
+        main_kb.add(KeyboardButton(change_role), KeyboardButton(context_title)) # save_chats -> context_title
         main_kb.add(KeyboardButton(settings))
     return main_kb
 
@@ -112,3 +112,23 @@ credit_btns.add(InlineKeyboardButton(
         buy_quest,
         callback_data="buy_requests"
 ))
+
+context_kb = ReplyKeyboardMarkup(resize_keyboard=True)
+context_kb.add(
+    KeyboardButton(save_chats),
+    KeyboardButton(delete_context),     #ДОПОЛНИТЬ
+)
+context_kb.add(
+    KeyboardButton(back)
+)
+
+delete_context_btns = InlineKeyboardMarkup(row_width=2)
+
+delete_context_btns.add(InlineKeyboardButton(
+        delete_context_true,
+        callback_data="deleting_context_true"),
+        InlineKeyboardButton(
+                delete_context_false,
+                callback_data="deleting_context_false"
+        )
+)

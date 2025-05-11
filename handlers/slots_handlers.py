@@ -1,8 +1,8 @@
 from aiogram import types
 from checkers.channel_checker import check_user_subscription, REQUIRED_CHANNEL
-from slots import *
 from keyboards.kb import *
 from config import *
+from context.slots import *
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 

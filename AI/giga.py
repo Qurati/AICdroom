@@ -1,4 +1,4 @@
-from context import *
+from context.context import *
 import requests
 from config import *
 
@@ -8,7 +8,6 @@ def get_giga_answer(messages, user_id):
 
     url = f"{api}/requestGiga='{messages}'"
     response = requests.get(url)
-    print(response.json())
     if response.json()['answer']['status']:
         result_text = response.json()['answer']['answer']
         save_message(user_id, "user", messages)
@@ -23,7 +22,6 @@ def get_giga_answer(messages, user_id):
 def get_giga_answer_inline(messages):
     url = f"{api}/requestGiga='{messages}'"
     response = requests.get(url)
-    print(response.json())
     if response.json()['answer']['status']:
         result_text = response.json()['answer']['answer']
         return {"answer": result_text, "status": True}

@@ -1,5 +1,4 @@
-import openai
-from context import *
+from context.context import *
 import requests
 from config import *
 
