@@ -34,7 +34,7 @@ def get_yandex_answer_inline(text, role_text):
             "ai": "Yandex",
             "messages": messages
         }
-        url = "https://aicdroom-api-qurati.amvera.io/request"
+        url = f"{api}/request"
         response = requests.post(url, json=data)
         result_text = response.json()['answer']['answer']
         return {"answer": result_text, "status": True}

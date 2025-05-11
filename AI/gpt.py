@@ -16,7 +16,6 @@ def get_gpt_answer(model, role_text, user_id, msg_text, history):
         response = requests.post(url, json=data)
         json_data = response.json()
         if json_data["answer"]['status']:
-            json_data = response.json()
             result_text = json_data["answer"]['answer']
             save_message(user_id, "user", msg_text)
             save_message(user_id, "assistant", result_text)
@@ -28,9 +27,17 @@ def get_gpt_answer(model, role_text, user_id, msg_text, history):
 
 
 def get_gpt_answer_inline(text, model, role_text):
+    url = f"{api}/requestGPT"
     try:
         messages = [{"role": "system", "content": role_text}, {"role": "user", "content": text}]
-        response = openai.ChatCompletion.create(model=model, messages=messages)
-        return {"answer": response.choices[0].message['content'], "status": True}
+        data = {
+            "ai": "Chat GPT",
+            "messages": messages,
+            "model": model}
+        response = requests.post(url, json=data)
+        json_data = response.json()
+        if json_data["answer"]['status']:
+            result_text = json_data["answer"]['answer']
+            return {"answer": result_text, "status": True}
     except Exception as e:
         return {"answer": f"Ошибка GPT: {e}", "status": False}

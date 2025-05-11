@@ -21,7 +21,7 @@ def get_giga_answer(messages, user_id):
 
 
 def get_giga_answer_inline(messages):
-    url = f"https://aicdroom-api-qurati.amvera.io/requestGiga='{messages}'"
+    url = f"{api}/requestGiga='{messages}'"
     response = requests.get(url)
     print(response.json())
     if response.json()['answer']['status']:
