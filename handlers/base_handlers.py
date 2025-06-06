@@ -19,8 +19,8 @@ def start_com(dp):
             return
         args = message.get_args()
         print(f"[BOT] /start ➜ token: {args}")
-
-        if token_exists(args):
+        exists, verif = token_exists(args)
+        if exists and verif == 0:
             code = str(random.randint(100000, 999999))
             set_code(args, code, message.from_user.id)
             await message.answer(f"Ваш код подтверждения: {code}")

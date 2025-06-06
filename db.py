@@ -1,5 +1,7 @@
 import json
 import ast
+from typing import Tuple, Any
+
 import psycopg2
 from config import *
 
@@ -203,10 +205,13 @@ def deduct_requests(user_id: int, count: int = 1):
     conn.close()
 
 
-def token_exists(token: str) -> bool:
+def token_exists(token: str) -> tuple[Any, tuple[Any, ...] | None]:
     conn, cursor = get_cursor()
     cursor.execute("SELECT 1 FROM auth_tokens WHERE token = %s", (token,))
-    return cursor.fetchone() is not None
+    exists = cursor.fetchone()
+    cursor.execute("SELECT verified FROM auth_tokens WHERE token = %s", (token,))
+    verif = cursor.fetchone()[0]
+    return exists is not None, verif
 
 def set_code(token: str, code: str, telegram_user_id: int):
     conn, cursor = get_cursor()
