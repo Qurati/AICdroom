@@ -1,3 +1,5 @@
+import random
+
 from aiogram import types
 from profile import *
 from config import *
@@ -18,13 +20,17 @@ def start_com(dp):
         args = message.get_args()
         print(f"[BOT] /start ➜ token: {args}")
 
-        # if auth_db.token_exists(args):
-        #     code = str(random.randint(100000, 999999))
-        #     auth_db.set_code(args, code, message.from_user.id)
-        #     await message.answer(f"Ваш код подтверждения: {code}")
-        # else:
-        #     await message.answer("Недействительная или просроченная ссылка.")просроченная
-
+        if token_exists(args):
+            code = str(random.randint(100000, 999999))
+            set_code(args, code, message.from_user.id)
+            await message.answer(f"Ваш код подтверждения: {code}")
+            return
+        else:
+            if args == '':
+                pass
+            else:
+                await message.answer("Недействительная или просроченная ссылка.")
+                return
         await message.answer("✅ Добро пожаловать! Вы подписаны.")
         conn, cursor = get_cursor()
         user_id = message.from_user.id

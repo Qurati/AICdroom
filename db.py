@@ -67,6 +67,16 @@ def create_db():
         content TEXT
     )''')
 
+    #таблица для авторизации в приложении
+    cursor.execute("""
+                CREATE TABLE IF NOT EXISTS auth_tokens (
+                    token TEXT PRIMARY KEY,
+                    code TEXT,
+                    verified INTEGER DEFAULT 0,
+                    telegram_user_id INTEGER
+                )
+            """)
+
     conn.commit()
     print('база данных создана')
     conn.close()
@@ -191,3 +201,18 @@ def deduct_requests(user_id: int, count: int = 1):
     """, (count, user_id))
     conn.commit()
     conn.close()
+
+
+def token_exists(token: str) -> bool:
+    conn, cursor = get_cursor()
+    cursor.execute("SELECT 1 FROM auth_tokens WHERE token = %s", (token,))
+    return cursor.fetchone() is not None
+
+def set_code(token: str, code: str, telegram_user_id: int):
+    conn, cursor = get_cursor()
+    cursor.execute("""
+            UPDATE auth_tokens
+            SET code = %s, telegram_user_id = %s, verified = 1
+            WHERE token = %s
+        """, (code, telegram_user_id, token))
+    conn.commit()
