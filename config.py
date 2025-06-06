@@ -12,4 +12,9 @@ bd_ai_list = ["GPT", "GigaChat", "Yandex"]
 admins = os.getenv('admins')
 api = os.getenv('api')
 
+user_db = os.getenv('user_db')
+password_db = os.getenv('password_db')
+host_db = os.getenv('host_db')
+database_db = os.getenv('database_db')
+
 bot = Bot(token=API_TOKEN,)

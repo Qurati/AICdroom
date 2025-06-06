@@ -24,7 +24,7 @@ def start_shop(dp):
             user_id = message.from_user.id
             conn, cursor = get_cursor()
 
-            cursor.execute("SELECT credits FROM database WHERE user_id = ?", (user_id,))
+            cursor.execute("SELECT credits FROM profile WHERE user_id = %s", (user_id,))
             row = cursor.fetchone()
             balance = row[0] if row else 0
 
@@ -32,8 +32,8 @@ def start_shop(dp):
                 await message.answer(f"❌ Недостаточно кредитов. У вас {balance}, нужно {val}.")
             else:
                 # Списываем кредиты и добавляем запросы
-                cursor.execute("UPDATE database SET credits = credits - ? WHERE user_id = ?", (val, user_id))
-                cursor.execute("UPDATE database SET daily_requests_left = daily_requests_left + ? WHERE user_id = ?",
+                cursor.execute("UPDATE profile SET credits = credits - %s WHERE user_id = %s", (val, user_id))
+                cursor.execute("UPDATE profile SET daily_requests_left = daily_requests_left + %s WHERE user_id = %s",
                             (count, user_id))
                 conn.commit()
                 await message.answer(f"✅ Вы приобрели {count} дополнительных запросов. Приятного использования!")

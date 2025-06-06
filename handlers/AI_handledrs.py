@@ -61,7 +61,7 @@ def AI_handlers(dp):
             gpt_model4: "gpt-4-turbo"
         }[message.text]
         conn, cursor = get_cursor()
-        cursor.execute("UPDATE database SET model = ? WHERE user_id = ?", (model, user_id))
+        cursor.execute("UPDATE profile SET model = %s WHERE user_id = %s", (model, user_id))
         conn.commit()
         conn.close()
         await message.answer(f"Ты выбрал {message.text}. Теперь отправь свой вопрос.", reply_markup=start_kb(message))
@@ -80,7 +80,7 @@ def AI_handlers(dp):
             giga_chat: "Giga",
         }[message.text]
         conn, cursor = get_cursor()
-        cursor.execute("UPDATE database SET AI = ? WHERE user_id = ?", (ai, user_id))
+        cursor.execute("UPDATE profile SET AI = %s WHERE user_id = %s", (ai, user_id))
         conn.commit()
         conn.close()
         await message.answer(f"Ты выбрал {message.text}. Теперь отправь свой вопрос.", reply_markup=start_kb(message))

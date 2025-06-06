@@ -43,8 +43,9 @@ def slots_handlers(dp):
     @dp.callback_query_handler(lambda c: c.data.startswith("delete_"))
     async def load_slot(call: types.CallbackQuery, state: FSMContext):
         slot_id = int(call.data.split("_")[-1])
+        slot_name = get_slot_name(call.from_user.id, slot_id)
         clear_slot(call.from_user.id, slot_id)
-        await call.answer(f'Ваша переписка удалена из {get_slot_name(call.from_user.id, slot_id)}', True)
+        await call.answer(f'Ваша переписка удалена из {slot_name}', True)
 
 
     @dp.callback_query_handler(text="return_btn")

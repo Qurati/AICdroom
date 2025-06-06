@@ -12,15 +12,15 @@ def req(msg):
         user_id = msg.from_user.id
         role_text = get_role(user_id)
         history = get_context(user_id)
-
         # получаем модель и ИИ из профиля
         conn, cursor = get_cursor()
-        cursor.execute("SELECT model FROM database WHERE user_id = ?", (user_id,))
+        cursor.execute("SELECT model FROM profile WHERE user_id = %s", (user_id,))
         model = cursor.fetchone()[0]
-        cursor.execute("SELECT AI FROM database WHERE user_id = ?", (user_id,))
+        cursor.execute("SELECT AI FROM profile WHERE user_id = %s", (user_id,))
         single_ai = cursor.fetchone()[0]
         conn.close()
         msg_text = msg.text
+        print('start')
         # выбираем режим
         if is_multi_mode(user_id):
             ai_list = get_active_ai_list(user_id)
@@ -63,4 +63,5 @@ def req(msg):
 
 
     except Exception as e:
+        print(f'exc: {e}')
         return {'answer': f'❌ Ошибка запроса', 'status': False}

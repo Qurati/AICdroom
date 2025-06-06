@@ -8,9 +8,10 @@ def start_kb(msg):
     main_kb = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
     user_id = msg.from_user.id
     conn, cursor = get_cursor()
-    cursor.execute("SELECT AI FROM database WHERE user_id = ?", (user_id,))
+    cursor.execute("SELECT AI FROM profile WHERE user_id = %s", (user_id,))
     ai = cursor.fetchone()[0]
     main_kb.add()
+
     if ai =="GPT":
         main_kb.add(KeyboardButton(profile), KeyboardButton(change_model))
         main_kb.add(KeyboardButton(change_AI), KeyboardButton(change_role))

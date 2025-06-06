@@ -17,7 +17,7 @@ def group_inline_handler(dp):
         if not user_input:
             return
         conn, cursor = get_cursor()
-        cursor.execute("SELECT AI FROM database WHERE user_id = ?", (user_id,))
+        cursor.execute("SELECT AI FROM database WHERE user_id = %s", (user_id,))
         single_ai = cursor.fetchone()[0]
         ai, model, role = get_ai_model_role(user_id)
         if is_multi_mode(user_id):

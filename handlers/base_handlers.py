@@ -15,11 +15,20 @@ def start_com(dp):
                 "❗ Для использования бота подпишитесь на канал:",
                 reply_markup=get_subscription_kb(REQUIRED_CHANNEL))
             return
+        args = message.get_args()
+        print(f"[BOT] /start ➜ token: {args}")
+
+        # if auth_db.token_exists(args):
+        #     code = str(random.randint(100000, 999999))
+        #     auth_db.set_code(args, code, message.from_user.id)
+        #     await message.answer(f"Ваш код подтверждения: {code}")
+        # else:
+        #     await message.answer("Недействительная или просроченная ссылка.")просроченная
 
         await message.answer("✅ Добро пожаловать! Вы подписаны.")
         conn, cursor = get_cursor()
         user_id = message.from_user.id
-        cursor.execute("INSERT OR IGNORE INTO database (user_id) VALUES (?)", (user_id,))
+        cursor.execute("""INSERT INTO profile (user_id) VALUES (%s) ON CONFLICT (user_id) DO NOTHING;""", (user_id,))
         conn.commit()
         await message.reply("Привет! Я бот для общения с нейронными сетями. Для начала выбери нужную тебе ИИ (по умолчанию Yandex GPT). Если выбираешь Chat GPT, то не забудь выбрать модель. \nПриятного пользования!",
                                 reply_markup=start_kb(message))

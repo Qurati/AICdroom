@@ -1,11 +1,16 @@
-import sqlite3
 import json
 import ast
+import psycopg2
+from config import *
 
 
 def connect():
-    conn = sqlite3.connect("database.db", check_same_thread=False)
-    conn.execute("PRAGMA journal_mode=WAL;")
+    connection = psycopg2.connect(user=user_db,
+                                  password=password_db,
+                                  host=host_db,
+                                  port="5432",
+                                  database=database_db)
+    conn = connection
     return conn
 
 # Функция для получения курсора
@@ -18,8 +23,10 @@ def create_db():
     conn, cursor = get_cursor()
 
     #таблица для записи выбранной ии
-    cursor.execute('''CREATE TABLE IF NOT EXISTS database (
+    cursor.execute('''CREATE TABLE IF NOT EXISTS profile (
                         user_id INTEGER PRIMARY KEY,
+                        message_count INTEGER DEFAULT 0,
+                        username TEXT DEFAULT 'Unknown',
                         model TEXT DEFAULT 'None',
                         AI TEXT DEFAULT 'Yandex',
                         role TEXT DEFAULT 'assistant',
@@ -30,36 +37,38 @@ def create_db():
                         last_request_date TEXT);''' )
 
     #таблица для записи контекста
-    cursor.execute('''CREATE TABLE IF NOT EXISTS context (
-                            user_id INTEGER,
-                            role TEXT,
-                            content TEXT,
-                            FOREIGN KEY(user_id) REFERENCES database(user_id)
-                          )''')
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS context (
+            user_id BIGINT NOT NULL,
+            role TEXT,
+            content TEXT
+        );
+    ''')
+
+    cursor.execute('''
+        DO $$
+        BEGIN
+            IF NOT EXISTS (
+                SELECT 1 FROM information_schema.columns 
+                WHERE table_name='context' AND column_name='id'
+            ) THEN
+                ALTER TABLE context ADD COLUMN id SERIAL PRIMARY KEY;
+            END IF;
+        END
+        $$;
+    ''')
 
     #таблица для записи слотов
     cursor.execute('''CREATE TABLE IF NOT EXISTS saved_slots (
         user_id INTEGER,
-        slot TEXT,
-        role TEXT,
+        slot INTEGER,
+        role TEXT, 
+        name TEXT DEFAULT 'Без названия',
         content TEXT
     )''')
 
-    #таблица для записи числа соо в профиле
-    cursor.execute('''CREATE TABLE IF NOT EXISTS profiles (
-                            user_id INTEGER PRIMARY KEY,
-                            username TEXT DEFAULT 'Unknown',
-                            message_count INTEGER DEFAULT 0,
-                            FOREIGN KEY(user_id) REFERENCES database(user_id)
-                          )''')
-    # таблица для записи слотов
-    cursor.execute('''CREATE TABLE IF NOT EXISTS slots (
-        user_id INTEGER,
-        slot_id INTEGER,
-        name TEXT DEFAULT 'Без названия',
-        context TEXT DEFAULT ''
-        );''')
     conn.commit()
+    print('база данных создана')
     conn.close()
 
 
@@ -67,18 +76,18 @@ def get_user_stats(user_id):
     conn, cursor = get_cursor()
 
     # Контекст
-    cursor.execute("SELECT COUNT(*) FROM context WHERE user_id = ?", (user_id,))
+    cursor.execute("SELECT COUNT(*) FROM context WHERE user_id = %s", (user_id,))
     context_count = cursor.fetchone()[0]
 
     # Слоты
-    cursor.execute("SELECT COUNT(*) FROM saved_slots WHERE user_id = ?", (user_id,))
+    cursor.execute("SELECT COUNT(*) FROM saved_slots WHERE user_id = %s", (user_id,))
     slots_total = cursor.fetchone()[0]
 
     # ИИ, модель, роль
-    cursor.execute("SELECT AI, model, role FROM database WHERE user_id = ?", (user_id,))
+    cursor.execute("SELECT AI, model, role FROM profile WHERE user_id = %s", (user_id,))
     data = cursor.fetchone()
 
-    cursor.execute("SELECT daily_requests_left FROM database WHERE user_id = ?", (user_id,))
+    cursor.execute("SELECT daily_requests_left FROM profile WHERE user_id = %s", (user_id,))
     requests = cursor.fetchone()
 
     conn.close()
@@ -98,7 +107,7 @@ def get_user_stats(user_id):
 
 def get_ai_model_role(user_id):
     conn, cursor = get_cursor()
-    cursor.execute("SELECT AI, model, role FROM database WHERE user_id = ?", (user_id,))
+    cursor.execute("SELECT AI, model, role FROM profile WHERE user_id = %s", (user_id,))
     data = cursor.fetchone()
     conn.close()
     if not data:
@@ -107,13 +116,13 @@ def get_ai_model_role(user_id):
 
 def set_active_ai_list(user_id, ai_list):
     conn, cursor = get_cursor()
-    cursor.execute("UPDATE database SET active_ai = ? WHERE user_id = ?", (json.dumps(ai_list), user_id))
+    cursor.execute("UPDATE profile SET active_ai = %s WHERE user_id = %s", (json.dumps(ai_list), user_id))
     conn.commit()
     conn.close()
 
 def get_active_ai_list(user_id):
     conn, cursor = get_cursor()
-    cursor.execute("SELECT active_ai FROM database WHERE user_id = ?", (user_id,))
+    cursor.execute("SELECT active_ai FROM profile WHERE user_id = %s", (user_id,))
     row = cursor.fetchone()
     conn.close()
     if not row or not row[0]:
@@ -124,17 +133,17 @@ def rename_slot(user_id: int, slot_id: int, new_name: str):
     conn, cursor = get_cursor()
 
     # Проверка, есть ли слот
-    cursor.execute("SELECT 1 FROM slots WHERE user_id = ? AND slot_id = ?", (user_id, slot_id))
+    cursor.execute("SELECT 1 FROM saved_slots WHERE user_id = %s AND slot = %s", (user_id, slot_id))
     exists = cursor.fetchone()
 
     if exists:
         cursor.execute(
-            "UPDATE slots SET name = ? WHERE user_id = ? AND slot_id = ?",
+            "UPDATE saved_slots SET name = %s WHERE user_id = %s AND slot = %s",
             (new_name, user_id, slot_id)
         )
     else:
         cursor.execute(
-            "INSERT INTO slots (user_id, slot_id, name) VALUES (?, ?, ?)",
+            "INSERT INTO saved_slots (user_id, slot, name) VALUES (%s, %s, %s)",
             (user_id, slot_id, new_name)
         )
 
@@ -144,17 +153,18 @@ def rename_slot(user_id: int, slot_id: int, new_name: str):
 def get_slot_name(user_id: int, slot_id: int) -> str:
     conn, cursor = get_cursor()
     cursor.execute(
-        "SELECT name FROM slots WHERE user_id = ? AND slot_id = ?",
+        "SELECT name FROM saved_slots WHERE user_id = %s AND slot = %s",
         (user_id, slot_id)
     )
     row = cursor.fetchone()
+    print(row)
     conn.close()
     return row[0] if row else "Без названия"
 
 def get_user_credits(user_id: int) -> int:
     conn, cursor = get_cursor()
     cursor = conn.cursor()
-    cursor.execute("SELECT credits FROM database WHERE user_id = ?", (user_id,))
+    cursor.execute("SELECT credits FROM profile WHERE user_id = %s", (user_id,))
     row = cursor.fetchone()
     conn.close()
     return row[0] if row else 0
@@ -162,22 +172,22 @@ def get_user_credits(user_id: int) -> int:
 def add_user_credits(user_id: int, amount: int):
     conn, cursor = get_cursor()
     cursor = conn.cursor()
-    cursor.execute("UPDATE database SET credits = credits + ? WHERE user_id = ?", (amount, user_id))
+    cursor.execute("UPDATE profile SET credits = credits + %s WHERE user_id = %s", (amount, user_id))
     conn.commit()
     conn.close()
 
 def set_user_credits(user_id: int, amount: int):
     conn, cursor = get_cursor()
-    cursor.execute("UPDATE database SET credits = ? WHERE user_id = ?", (amount, user_id))
+    cursor.execute("UPDATE profile SET credits = %s WHERE user_id = %s", (amount, user_id))
     conn.commit()
     conn.close()
 
 def deduct_requests(user_id: int, count: int = 1):
     conn, cursor = get_cursor()
     cursor.execute("""
-            UPDATE database
-            SET daily_requests_left = MAX(daily_requests_left - ?, 0)
-            WHERE user_id = ?
-        """, (count, user_id))
+        UPDATE profile
+        SET daily_requests_left = GREATEST(daily_requests_left - %s, 0)
+        WHERE user_id = %s
+    """, (count, user_id))
     conn.commit()
     conn.close()
